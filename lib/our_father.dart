@@ -7,13 +7,13 @@ class OurFather extends StatelessWidget {
   Widget build(context) {
     return Center(
       child: RichText(
-        text: TextSpan(
+        text: const TextSpan(
           text: 'Our Father, who art in heaven,\n',
           style: TextStyle(
                 color: Color.fromARGB(255, 98, 187, 235),
                 fontSize: 25,
               ),
-          children: const <TextSpan>[
+          children: <TextSpan>[
             TextSpan(
               text: 'hallowed be thy Name;\n',
               

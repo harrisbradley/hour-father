@@ -91,8 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            OurFather(),
-            SizedBox(height: 80,),
+            const OurFather(),
+            const SizedBox(height: 80,),
             const Text(
               'You have prayed the Our Father this many times:',
               style: TextStyle(
