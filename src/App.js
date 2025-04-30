@@ -11,15 +11,18 @@ import Login from "./pages/Login";
 import PrayerButton from "./components/PrayerButton";
 import PrayerStats from "./components/PrayerStats";
 import LastPrayer from "./components/LastPrayer";
-import PrayerLog from "./components/PrayerLog"; 
-import PrayerStreak from "./components/PrayerStreak"; 
+import PrayerLog from "./components/PrayerLog";
+import PrayerStreak from "./components/PrayerStreak";
 
 // Import Styles
 import * as styles from "./styles";
+import { useTheme } from "./ThemeContext";
+import { getContainerStyles } from "./styles";
 
 function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
-  const auth = getAuth(app);  // Firebase Auth instance
+  const auth = getAuth(app); // Firebase Auth instance
+  const { darkMode, toggleTheme } = useTheme(); // dark mode
 
   // 🔘 Log out the user
   async function handleLogout() {
@@ -27,7 +30,7 @@ function App() {
   }
 
   return (
-    <div style={styles.container}>
+    <div style={getContainerStyles(darkMode)}>
       <h1>Hour Father 🙏</h1>
 
       {/* 👤 Not logged in: show SignUp + Login forms */}
@@ -51,12 +54,19 @@ function App() {
 
           {/* 🕒 Show the most recent prayer time (or fallback if none) */}
           <LastPrayer />
-          
+
           {/* 🔥 Add streak tracker */}
-          <PrayerStreak />  
+          <PrayerStreak />
 
           {/* 📜 Add the list below the stats */}
-          <PrayerLog /> 
+          <PrayerLog />
+
+          {/* 🌙 Dark mode button*/}
+          <button onClick={toggleTheme} style={{ marginBottom: "1rem" }}>
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+
+          <br />
 
           {/* 🔓 Log out button */}
           <button onClick={handleLogout} style={styles.button}>

@@ -1,4 +1,18 @@
 // src/styles.js
+export function getContainerStyles(darkMode) {
+  return {
+    maxWidth: "500px",
+    margin: "2rem auto",
+    padding: "1rem",
+    textAlign: "center",
+    fontFamily: "'Segoe UI', sans-serif",
+    backgroundColor: darkMode ? "#121212" : "#ffffff",
+    color: darkMode ? "#e0e0e0" : "#000000",
+    minHeight: "100vh",
+    transition: "background 0.3s, color 0.3s",
+  };
+}
+
 export const container = {
     maxWidth: "500px",
     margin: "2rem auto",
