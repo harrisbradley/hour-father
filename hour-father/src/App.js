@@ -10,6 +10,8 @@ import Login from "./pages/Login";
 // Import core components
 import PrayerButton from "./components/PrayerButton";
 import PrayerStats from "./components/PrayerStats";
+import LastPrayer from "./components/LastPrayer"; // ✅ new
+import PrayerLog from "./components/PrayerLog"; // ✅ new
 
 function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
@@ -42,6 +44,12 @@ function App() {
 
           {/* 📊 Show total prayer count */}
           <PrayerStats />
+
+          {/* 🕒 Show the most recent prayer time (or fallback if none) */}
+          <LastPrayer />
+
+          {/* 📜 Add the list below the stats */}
+          <PrayerLog /> 
 
           {/* 🔓 Log out button */}
           <button onClick={handleLogout} style={{ marginTop: "1rem" }}>
