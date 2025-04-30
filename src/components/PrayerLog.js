@@ -10,6 +10,9 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
+// import styles
+import { card } from "../styles";
+
 function PrayerLog() {
   const { user } = useAuth();
   const [prayers, setPrayers] = useState([]);
@@ -41,7 +44,7 @@ function PrayerLog() {
   }, [user]);
 
   return (
-    <div style={{ marginTop: "2rem", maxWidth: "400px", marginInline: "auto" }}>
+    <div style={card}>
       <h3 style={{ marginBottom: "1rem" }}>📜 Prayer Log</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
         {prayers.map((prayer) => (

@@ -14,6 +14,9 @@ import LastPrayer from "./components/LastPrayer";
 import PrayerLog from "./components/PrayerLog"; 
 import PrayerStreak from "./components/PrayerStreak"; 
 
+// Import Styles
+import * as styles from "./styles";
+
 function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
   const auth = getAuth(app);  // Firebase Auth instance
@@ -24,7 +27,7 @@ function App() {
   }
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
+    <div style={styles.container}>
       <h1>Hour Father 🙏</h1>
 
       {/* 👤 Not logged in: show SignUp + Login forms */}
@@ -56,7 +59,7 @@ function App() {
           <PrayerLog /> 
 
           {/* 🔓 Log out button */}
-          <button onClick={handleLogout} style={{ marginTop: "1rem" }}>
+          <button onClick={handleLogout} style={styles.button}>
             Log Out
           </button>
         </>

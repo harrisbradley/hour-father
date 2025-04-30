@@ -3,6 +3,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
+// import styles
+import { prayerButton } from "../styles";
+
 function PrayerButton() {
   const { user } = useAuth();
 
@@ -21,9 +24,9 @@ function PrayerButton() {
   }
 
   return (
-    <button onClick={handlePrayer} style={{ padding: "1rem", fontSize: "1.2rem", marginTop: "2rem" }}>
-      🙏 I Just Prayed
-    </button>
+    <button onClick={handlePrayer} style={prayerButton}>
+  🙏 I Just Prayed
+</button>
   );
 }
 
