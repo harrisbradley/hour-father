@@ -13,7 +13,7 @@ import { useAuth } from "../AuthContext";
 // import styles
 import { card } from "../styles";
 
-function PrayerLog() {
+function PrayerLog({ darkMode }) {
   const { user } = useAuth();
   const [prayers, setPrayers] = useState([]);
 
@@ -44,33 +44,45 @@ function PrayerLog() {
   }, [user]);
 
   return (
-    <div style={card}>
-      <h3 style={{ marginBottom: "1rem" }}>📜 Prayer Log</h3>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {prayers.map((prayer) => (
-          <li
-            key={prayer.id}
-            style={{
-              borderBottom: "1px solid #ccc",
-              padding: "0.5rem 0",
-              fontSize: "0.95rem"
-            }}
-          >
-            {prayer.prayedAt
-              ? prayer.prayedAt.toLocaleString(undefined, {
-                  dateStyle: "medium",
-                  timeStyle: "short"
-                })
-              : "Pending..."}
-          </li>
-        ))}
-        {prayers.length === 0 && (
-          <li style={{ fontStyle: "italic", color: "#666" }}>
-            No prayers logged yet.
-          </li>
-        )}
-      </ul>
-    </div>
+    <div
+    style={{
+      marginTop: "2rem",
+      maxWidth: "400px",
+      marginInline: "auto",
+      backgroundColor: darkMode ? "#1e1e1e" : "#f9f9f9",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      padding: "1rem",
+      color: darkMode ? "#f5f5f5" : "#222",
+    }}
+  >
+    <h3>📜 Prayer Log</h3>
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      {prayers.map((prayer) => (
+        <li
+          key={prayer.id}
+          style={{
+            borderBottom: "1px solid #555",
+            padding: "0.5rem 0",
+            fontSize: "0.95rem"
+          }}
+        >
+          {prayer.prayedAt
+            ? prayer.prayedAt.toLocaleString(undefined, {
+                dateStyle: "medium",
+                timeStyle: "short"
+              })
+            : "Pending..."}
+        </li>
+      ))}
+      {prayers.length === 0 && (
+        <li style={{ fontStyle: "italic", color: darkMode ? "#aaa" : "#666" }}>
+          No prayers logged yet.
+        </li>
+      )}
+    </ul>
+  </div>
+  
   );
 }
 

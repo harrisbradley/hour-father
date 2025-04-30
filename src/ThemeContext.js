@@ -10,6 +10,11 @@ export function ThemeProvider({ children }) {
     const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
     setDarkMode(prefersDark);
   }, []);
+  
+  useEffect(() => {
+    // Add/remove class to <body>
+    document.body.classList.toggle("light", !darkMode);
+  }, [darkMode]);
 
   function toggleTheme() {
     setDarkMode((prev) => !prev);
