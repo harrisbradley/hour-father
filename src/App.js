@@ -59,7 +59,7 @@ function App() {
           <PrayerStreak />
 
           {/* 📜 Add the list below the stats */}
-          <PrayerLog />
+          <PrayerLog darkMode={darkMode} />
 
           {/* 🌙 Dark mode button*/}
           <button onClick={toggleTheme} style={{ marginBottom: "1rem" }}>

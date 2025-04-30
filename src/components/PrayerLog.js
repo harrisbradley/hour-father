@@ -76,7 +76,7 @@ function PrayerLog({ darkMode }) {
         </li>
       ))}
       {prayers.length === 0 && (
-        <li style={{ fontStyle: "italic", color: darkMode ? "#aaa" : "#666" }}>
+        <li style={{ fontStyle: "italic", color: darkMode ? "#aaa" : "#665" }}>
           No prayers logged yet.
         </li>
       )}
