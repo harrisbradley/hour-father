@@ -47,6 +47,8 @@ export const container = {
   };
 
   export const prayerButtonHover = {
-    backgroundColor: "#246b45",
+    backgroundColor: "#0b5ed7", // Slightly darker blue
+    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+    transform: "scale(1.02)",
   };
   
