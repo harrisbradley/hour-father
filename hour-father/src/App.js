@@ -1,12 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { useAuth } from "./AuthContext";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 
-// src/App.js
 function App() {
+  const { user } = useAuth();
+
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
       <h1>Hour Father 🙏</h1>
-      <p>The app is working!</p>
+
+      {!user && (
+        <>
+          <SignUp />
+          <Login />
+        </>
+      )}
+
+      {user && (
+        <>
+          <p>Welcome back, {user.email}!</p>
+        </>
+      )}
     </div>
   );
 }
