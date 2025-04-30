@@ -8,6 +8,7 @@ import { useAuth } from "../AuthContext";
 
 // import styles
 import { prayerButton, prayerButtonHover } from "../styles";
+import { toast } from "react-toastify";
 
 function PrayerButton() {
   const { user } = useAuth();
@@ -26,10 +27,10 @@ function PrayerButton() {
         prayedAt: serverTimestamp(), // ⏰ when they prayed
       });
 
-      alert("🙏 Prayer logged!");
+      toast.success("🙏 Prayer logged!");
     } catch (error) {
       console.error("Error logging prayer:", error);
-      alert("❌ Failed to log prayer.");
+      toast.error("❌ Failed to log prayer.");
     }
   }
 
