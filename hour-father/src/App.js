@@ -10,8 +10,9 @@ import Login from "./pages/Login";
 // Import core components
 import PrayerButton from "./components/PrayerButton";
 import PrayerStats from "./components/PrayerStats";
-import LastPrayer from "./components/LastPrayer"; // ✅ new
-import PrayerLog from "./components/PrayerLog"; // ✅ new
+import LastPrayer from "./components/LastPrayer";
+import PrayerLog from "./components/PrayerLog"; 
+import PrayerStreak from "./components/PrayerStreak"; 
 
 function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
@@ -47,6 +48,9 @@ function App() {
 
           {/* 🕒 Show the most recent prayer time (or fallback if none) */}
           <LastPrayer />
+          
+          {/* 🔥 Add streak tracker */}
+          <PrayerStreak />  
 
           {/* 📜 Add the list below the stats */}
           <PrayerLog /> 
