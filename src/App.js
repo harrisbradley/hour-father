@@ -18,6 +18,8 @@ import PrayerStreak from "./components/PrayerStreak";
 import * as styles from "./styles";
 import { useTheme } from "./ThemeContext";
 import { getContainerStyles } from "./styles";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
@@ -60,6 +62,8 @@ function App() {
 
           {/* 📜 Add the list below the stats */}
           <PrayerLog darkMode={darkMode} />
+
+          <ToastContainer position="top-center" autoClose={3000} />
 
           {/* 🌙 Dark mode button*/}
           <button onClick={toggleTheme} style={{ marginBottom: "1rem" }}>
