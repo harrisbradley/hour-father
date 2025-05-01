@@ -15,6 +15,9 @@ import PrayerLog from "./components/PrayerLog";
 import PrayerStreak from "./components/PrayerStreak";
 import PrayerMap from "./components/PrayerMap";
 
+//Import react components
+import { useState } from "react";
+
 // Import Styles
 import * as styles from "./styles";
 import { useTheme } from "./ThemeContext";
@@ -26,6 +29,7 @@ function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
   const auth = getAuth(app); // Firebase Auth instance
   const { darkMode, toggleTheme } = useTheme(); // dark mode
+  const [showLogin, setShowLogin] = useState(true);
 
   // 🔘 Log out the user
   async function handleLogout() {
@@ -38,14 +42,48 @@ function App() {
 
       {/* 👤 Not logged in: show SignUp + Login forms */}
       {!user && (
-        <>
-          <SignUp />
-          <Login />
-          
-        </>
-        
-
-      )}
+  <>
+    {showLogin ? (
+      <>
+        <Login />
+        <p style={{ marginTop: "1rem" }}>
+          Need an account?{" "}
+          <button
+            onClick={() => setShowLogin(false)}
+            style={{
+              border: "none",
+              background: "none",
+              color: "#0d6efd",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+          >
+            Create one here
+          </button>
+        </p>
+      </>
+    ) : (
+      <>
+        <SignUp />
+        <p style={{ marginTop: "1rem" }}>
+          Already have an account?{" "}
+          <button
+            onClick={() => setShowLogin(true)}
+            style={{
+              border: "none",
+              background: "none",
+              color: "#0d6efd",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+          >
+            Log in here
+          </button>
+        </p>
+      </>
+    )}
+  </>
+)}
 
       {/* 👤 Logged in: show greeting, button, stats, logout */}
       {user && (
