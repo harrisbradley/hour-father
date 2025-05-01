@@ -1,0 +1,20 @@
+name: Test SSH to Raspberry Pi
+
+on:
+  workflow_dispatch:  # Allows you to manually trigger the workflow
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Test SSH Connection
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.RPI_HOST }}
+        username: ${{ secrets.RPI_USER }}
+        key: ${{ secrets.RPI_SSH_KEY }}
+        script: |
+          echo "✅ SSH Success!"
+          uname -a
+          whoami
