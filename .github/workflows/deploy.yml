@@ -1,15 +1,15 @@
-name: Deploy to Raspberry Pi
+name: Deploy React App on Raspberry Pi
 
 on:
   push:
-    branches: [main]
+    branches: [main]  # or use 'workflow_dispatch' if you want to trigger it manually
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted  # 👈 this makes it run on the Pi
 
     steps:
-    - name: Checkout code
+    - name: Checkout repo
       uses: actions/checkout@v3
 
     - name: Set up Node.js
@@ -23,22 +23,8 @@ jobs:
     - name: Build React app
       run: npm run build
 
-    - name: Copy build to Raspberry Pi
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.RPI_HOST }}
-        username: ${{ secrets.RPI_USER }}
-        key: ${{ secrets.RPI_SSH_KEY }}
-        source: "build/*"
-        target: "/home/pi/build-temp"
-
-    - name: Move build to Nginx directory via SSH
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.RPI_HOST }}
-        username: ${{ secrets.RPI_USER }}
-        key: ${{ secrets.RPI_SSH_KEY }}
-        script: |
-          sudo rm -rf /var/www/html/*
-          sudo cp -r /home/pi/build-temp/* /var/www/html/
-          sudo systemctl restart nginx
+    - name: Deploy to Nginx
+      run: |
+        sudo rm -rf /var/www/html/*
+        sudo cp -r build/* /var/www/html/
+        sudo systemctl restart nginx
