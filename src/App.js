@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div style={getContainerStyles(darkMode)}>
-      <h1>Hour Father 🙏</h1>
+      <h1>🙏 Hour Father 🙏</h1>
 
       {/* 👤 Not logged in: show SignUp + Login forms */}
       {!user && (
