@@ -10,8 +10,6 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
-// import styles
-import { card } from "../styles";
 
 function PrayerLog({ darkMode }) {
   const { user } = useAuth();
