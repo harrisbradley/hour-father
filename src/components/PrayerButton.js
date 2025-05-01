@@ -21,17 +21,41 @@ function PrayerButton() {
   };
 
   async function handlePrayer() {
-    try {
-      await addDoc(collection(db, "prayers"), {
-        userId: user.uid, // 🔐 who prayed
-        prayedAt: serverTimestamp(), // ⏰ when they prayed
-      });
-
-      toast.success("🙏 Prayer logged!");
-    } catch (error) {
-      console.error("Error logging prayer:", error);
-      toast.error("❌ Failed to log prayer.");
-    }
+    if (!user) return;
+  
+    // 🧭 Step 1: Try to get current location
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+  
+        try {
+          await addDoc(collection(db, "prayers"), {
+            userId: user.uid,
+            prayedAt: serverTimestamp(),
+            location: {
+              lat: latitude,
+              lng: longitude,
+            },
+          });
+  
+          toast.success("🙏 Prayer logged with location!");
+        } catch (error) {
+          console.error("Error saving prayer:", error);
+          toast.error("❌ Prayer failed to save.");
+        }
+      },
+      (error) => {
+        console.warn("Location permission denied or unavailable", error);
+  
+        // 📍 Fallback if location fails — still log the prayer
+        addDoc(collection(db, "prayers"), {
+          userId: user.uid,
+          prayedAt: serverTimestamp(),
+        });
+  
+        toast.warn("🙏 Prayer logged, but no location available.");
+      }
+    );
   }
 
   return (

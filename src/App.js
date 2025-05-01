@@ -13,6 +13,7 @@ import PrayerStats from "./components/PrayerStats";
 import LastPrayer from "./components/LastPrayer";
 import PrayerLog from "./components/PrayerLog";
 import PrayerStreak from "./components/PrayerStreak";
+import PrayerMap from "./components/PrayerMap";
 
 // Import Styles
 import * as styles from "./styles";
@@ -40,7 +41,10 @@ function App() {
         <>
           <SignUp />
           <Login />
+          
         </>
+        
+
       )}
 
       {/* 👤 Logged in: show greeting, button, stats, logout */}
@@ -60,6 +64,8 @@ function App() {
           {/* 🔥 Add streak tracker */}
           <PrayerStreak />
 
+          
+
           {/* 📜 Add the list below the stats */}
           <PrayerLog darkMode={darkMode} />
 
@@ -76,7 +82,9 @@ function App() {
           <button onClick={handleLogout} style={styles.button}>
             Log Out
           </button>
+          <PrayerMap />
         </>
+        
       )}
     </div>
   );
