@@ -18,8 +18,6 @@ import PrayerStreak from "./components/PrayerStreak";
 import * as styles from "./styles";
 import { useTheme } from "./ThemeContext";
 import { getContainerStyles } from "./styles";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { user } = useAuth(); // 🔐 Get the currently logged-in user
@@ -77,7 +75,6 @@ function App() {
         </>
       )}
     </div>
-    <ToastContainer position="top-center" autoClose={3000} />
   );
 }
 
