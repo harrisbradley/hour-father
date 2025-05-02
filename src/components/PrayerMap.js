@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../firebase";
 import L from "leaflet";
+import { timeZoneCenters } from "../utils/timezoneMap";
 
 // ✅ Fix default marker icon path (Leaflet quirk)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -13,8 +14,11 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-function PrayerMap({refreshKey}) {
+function PrayerMap({ refreshKey, userTimeZone }) {
   const [locations, setLocations] = useState([]);
+
+  // ✅ Now that userTimeZone is a prop, we can safely use it
+  const centerCoords = timeZoneCenters[userTimeZone] || timeZoneCenters["default"];
 
   useEffect(() => {
     async function fetchPrayersWithLocation() {
@@ -47,22 +51,30 @@ function PrayerMap({refreshKey}) {
   }, [refreshKey]);
 
   return (
-    <div style={{ height: "400px", marginTop: "2rem", borderRadius: "8px", overflow: "hidden" }}>
+    <div
+      style={{
+        height: "400px",
+        marginTop: "2rem",
+        borderRadius: "8px",
+        overflow: "hidden",
+      }}
+    >
       <h3>🌍 Global Prayer Map</h3>
       <MapContainer
-        center={[20, 0]} // center of the map (roughly global center)
+        center={centerCoords}
         zoom={2}
         style={{ height: "100%", width: "100%" }}
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {locations.map((loc) => (
           <Marker key={loc.id} position={[loc.lat, loc.lng]}>
             <Popup>
-              Prayer logged at:<br />
+              Prayer logged at:
+              <br />
               {loc.time?.toLocaleString()}
             </Popup>
           </Marker>

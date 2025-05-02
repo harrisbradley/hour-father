@@ -1,13 +1,14 @@
-// Import context and Firebase auth
+// 📦 Firebase & Authentication setup
 import { useAuth } from "./AuthContext";
 import { getAuth, signOut } from "firebase/auth";
-import { app } from "./firebase";
+import { app, db } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
 
-// Import signup/login pages
+// 🧾 Page-level components
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 
-// Import core components
+// 🧩 Core UI components
 import PrayerButton from "./components/PrayerButton";
 import PrayerStats from "./components/PrayerStats";
 import LastPrayer from "./components/LastPrayer";
@@ -16,35 +17,57 @@ import PrayerStreak from "./components/PrayerStreak";
 import PrayerMap from "./components/PrayerMap";
 import UserProfile from "./components/UserProfile";
 
-// Import react components
-import { useState } from "react";
+// ⚛️ React tools
+import { useState, useEffect } from "react";
 
-// Import Styles
+// 🎨 Styling & Themes
 import * as styles from "./styles";
 import { useTheme } from "./ThemeContext";
 import { getContainerStyles } from "./styles";
+
+// 🔔 Toast notifications
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const { user } = useAuth(); // 🔐 Get the currently logged-in user
-  const auth = getAuth(app); // Firebase Auth instance
-  const { darkMode, toggleTheme } = useTheme(); // dark mode
-  const [showLogin, setShowLogin] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [showProfile, setShowProfile] = useState(false);
+  // 🔐 Auth + Theme
+  const { user } = useAuth();
+  const auth = getAuth(app);
+  const { darkMode, toggleTheme } = useTheme();
 
-  // 🔘 Log out the user
+  // 🧠 App-level state
+  const [showLogin, setShowLogin] = useState(true); // toggle between login/signup
+  const [refreshKey, setRefreshKey] = useState(0); // for reloading prayer data
+  const [showProfile, setShowProfile] = useState(false); // profile screen toggle
+  const [userProfile, setUserProfile] = useState(null); // { name, timeZone }
+
+  // 🔄 Load user profile from Firestore
+  useEffect(() => {
+    async function fetchProfile() {
+      if (!user) return;
+
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        setUserProfile(snap.data());
+      }
+    }
+
+    fetchProfile();
+  }, [user]);
+
+  // 🚪 Log out the user
   async function handleLogout() {
     await signOut(auth);
   }
 
   return (
     <>
+      {/* 🎨 Themed app container */}
       <div style={getContainerStyles(darkMode)}>
         <h1>🙏 Hour Father 🙏</h1>
 
-        {/* 👤 Not logged in: show SignUp + Login forms */}
+        {/* 👥 If no user is logged in... show Login/Signup */}
         {!user && (
           <>
             {showLogin ? (
@@ -89,21 +112,31 @@ function App() {
           </>
         )}
 
-        {/* 👤 Logged in */}
-        {user && (
-          showProfile ? (
+        {/* 👤 If user is logged in... */}
+        {user &&
+          (showProfile ? (
+            // ⚙️ Profile view
             <UserProfile onBack={() => setShowProfile(false)} />
           ) : (
             <>
-              <p>Welcome back, {user.email}!</p>
+              {/* 🙋‍♂️ Greet user by name or email */}
+              <p>
+                Welcome back,{" "}
+                <strong>{userProfile?.name || user.email}</strong>!
+              </p>
 
+              {/* 🙏 Core functionality */}
               <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
               <PrayerStats refreshKey={refreshKey} />
               <LastPrayer refreshKey={refreshKey} />
               <PrayerStreak refreshKey={refreshKey} />
               <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
-              <PrayerMap refreshKey={refreshKey} />
+              <PrayerMap
+                refreshKey={refreshKey}
+                userTimeZone={userProfile?.timeZone}
+              />
 
+              {/* ⚙️ Settings & Appearance */}
               <button
                 onClick={() => setShowProfile(true)}
                 style={{
@@ -119,19 +152,20 @@ function App() {
                 ⚙️ Profile Settings
               </button>
 
+              {/* 🌙 Theme Toggle */}
               <button onClick={toggleTheme} style={{ marginTop: "1rem" }}>
                 {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
               </button>
 
+              {/* 🔓 Logout */}
               <button onClick={handleLogout} style={styles.button}>
                 Log Out
               </button>
             </>
-          )
-        )}
+          ))}
       </div>
 
-      {/* 💬 Toasts should appear globally */}
+      {/* 💬 Toast notifications (non-blocking) */}
       <ToastContainer position="top-center" autoClose={3000} />
     </>
   );
