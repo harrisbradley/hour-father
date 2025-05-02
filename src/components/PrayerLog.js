@@ -5,7 +5,8 @@ import {
   query,
   where,
   orderBy,
-  getDocs
+  getDocs,
+  limit
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
@@ -22,7 +23,8 @@ function PrayerLog({ darkMode }) {
       const q = query(
         collection(db, "prayers"),
         where("userId", "==", user.uid),
-        orderBy("prayedAt", "desc")
+        orderBy("prayedAt", "desc"),
+        limit(5) // ✅ Only get the latest 5
       );
 
       const snapshot = await getDocs(q);
@@ -54,7 +56,7 @@ function PrayerLog({ darkMode }) {
       color: darkMode ? "#f5f5f5" : "#222",
     }}
   >
-    <h3>📜 Prayer Log</h3>
+    <h3>📜 Last 5 Prayers</h3>
     <ul style={{ listStyle: "none", padding: 0 }}>
       {prayers.map((prayer) => (
         <li
