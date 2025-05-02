@@ -1,9 +1,49 @@
 // src/components/UserProfile.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "../firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { useAuth } from "../AuthContext";
+import { toast } from "react-toastify";
+
+const timeZones = Intl.supportedValuesOf("timeZone");
 
 function UserProfile({ onBack }) {
   const [name, setName] = useState("");
   const [timeZone, setTimeZone] = useState("");
+  const { user } = useAuth();
+
+  useEffect(() => {
+    async function fetchProfile() {
+      if (!user) return;
+
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        const data = snap.data();
+        setName(data.name || "");
+        setTimeZone(data.timeZone || "");
+      }
+    }
+
+    fetchProfile();
+  }, [user]);
+
+  async function handleSaveProfile() {
+    if (!user) return;
+
+    try {
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        timeZone,
+      });
+
+      toast.success("✅ Profile saved!");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("❌ Failed to save profile");
+    }
+  }
 
   return (
     <div style={styles.container}>
@@ -24,17 +64,24 @@ function UserProfile({ onBack }) {
       {/* Time Zone Input */}
       <label style={styles.label}>
         Time Zone:
-        <input
-          type="text"
+        <select
           value={timeZone}
           onChange={(e) => setTimeZone(e.target.value)}
-          placeholder="e.g. America/Los_Angeles"
           style={styles.input}
-        />
+        >
+          <option value="">Select your time zone</option>
+          {timeZones.map((tz) => (
+            <option key={tz} value={tz}>
+              {tz}
+            </option>
+          ))}
+        </select>
       </label>
 
       {/* Save Button */}
-      <button style={styles.button}>💾 Save Changes</button>
+      <button style={styles.button} onClick={handleSaveProfile}>
+        💾 Save Changes
+      </button>
 
       <hr style={{ margin: "2rem 0" }} />
 
