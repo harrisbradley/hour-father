@@ -16,7 +16,7 @@ import PrayerLog from "./components/PrayerLog";
 import PrayerStreak from "./components/PrayerStreak";
 import PrayerMap from "./components/PrayerMap";
 import UserProfile from "./components/UserProfile";
-import OurFather from "./components/OurFather";
+import OurFatherModal from "./components/OurFatherModal";
 
 // ⚛️ React tools
 import { useState, useEffect } from "react";
@@ -41,7 +41,9 @@ function App() {
   const [refreshKey, setRefreshKey] = useState(0); // for reloading prayer data
   const [showProfile, setShowProfile] = useState(false); // profile screen toggle
   const [userProfile, setUserProfile] = useState(null); // { name, timeZone }
-  const [showPrayerText, setShowPrayerText] = useState(false);
+
+  // page
+  const [showPrayerModal, setShowPrayerModal] = useState(false);
 
   // 🔄 Load user profile from Firestore
   useEffect(() => {
@@ -127,22 +129,21 @@ function App() {
               </p>
 
               {/* 🙏 Core functionality */}
-              <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
+              <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />              
               <button
-  onClick={() => setShowPrayerText(!showPrayerText)}
-  style={{
-    marginTop: "1rem",
-    padding: "0.5rem 1rem",
-    backgroundColor: "#0d6efd",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  }}
->
-  {showPrayerText ? "Hide Our Father" : "Show Our Father"}
-</button>
-{showPrayerText && <OurFather />}
+                onClick={() => setShowPrayerModal(true)}
+                style={{
+                  marginTop: "1rem",
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#0d6efd",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                📖 Show Our Father2
+              </button>
               <PrayerStats refreshKey={refreshKey} />
               <LastPrayer refreshKey={refreshKey} />
               <PrayerStreak refreshKey={refreshKey} />
@@ -179,6 +180,15 @@ function App() {
               </button>
             </>
           ))}
+        {showPrayerModal && (
+          <OurFatherModal
+            onClose={() => setShowPrayerModal(false)}
+            onPrayed={() => {
+              setRefreshKey((k) => k + 1); // 🔄 trigger refresh
+              setShowPrayerModal(false); // ❌ close modal
+            }}
+          />
+        )}
       </div>
 
       {/* 💬 Toast notifications (non-blocking) */}
