@@ -10,7 +10,7 @@ import { useAuth } from "../AuthContext";
 import { prayerButton, prayerButtonHover } from "../styles";
 import { toast } from "react-toastify";
 
-function PrayerButton() {
+function PrayerButton({ onPrayed }) {
   const { user } = useAuth();
   const [hovering, setHovering] = useState(false); // ✅ track hover state
 
@@ -39,6 +39,7 @@ function PrayerButton() {
           });
   
           toast.success("🙏 Prayer logged with location!");
+          onPrayed?.();
         } catch (error) {
           console.error("Error saving prayer:", error);
           toast.error("❌ Prayer failed to save.");

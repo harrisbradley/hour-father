@@ -30,6 +30,7 @@ function App() {
   const auth = getAuth(app); // Firebase Auth instance
   const { darkMode, toggleTheme } = useTheme(); // dark mode
   const [showLogin, setShowLogin] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // 🔘 Log out the user
   async function handleLogout() {
@@ -91,21 +92,21 @@ function App() {
           <p>Welcome back, {user.email}!</p>
 
           {/* 🙏 Log a new prayer */}
-          <PrayerButton />
+          <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
 
           {/* 📊 Show total prayer count */}
-          <PrayerStats />
+          <PrayerStats refreshKey={refreshKey} />
 
           {/* 🕒 Show the most recent prayer time (or fallback if none) */}
-          <LastPrayer />
+          <LastPrayer refreshKey={refreshKey} />
 
           {/* 🔥 Add streak tracker */}
-          <PrayerStreak />
+          <PrayerStreak refreshKey={refreshKey} />
 
           
 
           {/* 📜 Add the list below the stats */}
-          <PrayerLog darkMode={darkMode} />
+          <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
 
           <ToastContainer position="top-center" autoClose={3000} />
 
@@ -120,7 +121,7 @@ function App() {
           <button onClick={handleLogout} style={styles.button}>
             Log Out
           </button>
-          <PrayerMap />
+          <PrayerMap refreshKey={refreshKey} />
         </>
         
       )}

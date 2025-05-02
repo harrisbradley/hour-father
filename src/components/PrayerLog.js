@@ -12,7 +12,7 @@ import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
 
-function PrayerLog({ darkMode }) {
+function PrayerLog({ darkMode, refreshKey }) {
   const { user } = useAuth();
   const [prayers, setPrayers] = useState([]);
 
@@ -41,7 +41,7 @@ function PrayerLog({ darkMode }) {
     }
 
     fetchPrayers();
-  }, [user]);
+  }, [user, refreshKey]);
 
   return (
     <div

@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-function PrayerMap() {
+function PrayerMap({refreshKey}) {
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function PrayerMap() {
     }
 
     fetchPrayersWithLocation();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <div style={{ height: "400px", marginTop: "2rem", borderRadius: "8px", overflow: "hidden" }}>

@@ -10,7 +10,7 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
-function PrayerStreak() {
+function PrayerStreak({refreshKey}) {
   const { user } = useAuth();
   const [streak, setStreak] = useState(0);
 
@@ -56,7 +56,7 @@ function PrayerStreak() {
     }
 
     calculateStreak();
-  }, [user]);
+  }, [user, refreshKey]);
 
   return (
     <p style={{ marginTop: "1rem", fontSize: "1.1rem" }}>

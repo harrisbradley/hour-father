@@ -4,7 +4,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
-function PrayerStats() {
+function PrayerStats({ refreshKey }) {
   const { user } = useAuth();
   const [prayerCount, setPrayerCount] = useState(0);
 
@@ -22,7 +22,7 @@ function PrayerStats() {
     }
 
     fetchPrayerCount();
-  }, [user]);
+  }, [user, refreshKey]);
 
   return (
     <p style={{ marginTop: "1rem", fontSize: "1.1rem" }}>

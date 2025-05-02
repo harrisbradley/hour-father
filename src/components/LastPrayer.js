@@ -4,7 +4,7 @@ import { collection, query, where, orderBy, limit, getDocs } from "firebase/fire
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
-function LastPrayer() {
+function LastPrayer({ refreshKey }) {
   const { user } = useAuth();
   const [lastTime, setLastTime] = useState(null);
 
@@ -33,7 +33,7 @@ function LastPrayer() {
     }
 
     fetchLastPrayer();
-  }, [user]);
+  }, [user, refreshKey]);
 
   // 🧠 Format date and time
   function formatDateTime(date) {
