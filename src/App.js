@@ -14,8 +14,9 @@ import LastPrayer from "./components/LastPrayer";
 import PrayerLog from "./components/PrayerLog";
 import PrayerStreak from "./components/PrayerStreak";
 import PrayerMap from "./components/PrayerMap";
+import UserProfile from "./components/UserProfile";
 
-//Import react components
+// Import react components
 import { useState } from "react";
 
 // Import Styles
@@ -31,6 +32,7 @@ function App() {
   const { darkMode, toggleTheme } = useTheme(); // dark mode
   const [showLogin, setShowLogin] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showProfile, setShowProfile] = useState(false);
 
   // 🔘 Log out the user
   async function handleLogout() {
@@ -38,94 +40,100 @@ function App() {
   }
 
   return (
-    <div style={getContainerStyles(darkMode)}>
-      <h1>🙏 Hour Father 🙏</h1>
+    <>
+      <div style={getContainerStyles(darkMode)}>
+        <h1>🙏 Hour Father 🙏</h1>
 
-      {/* 👤 Not logged in: show SignUp + Login forms */}
-      {!user && (
-  <>
-    {showLogin ? (
-      <>
-        <Login />
-        <p style={{ marginTop: "1rem" }}>
-          Need an account?{" "}
-          <button
-            onClick={() => setShowLogin(false)}
-            style={{
-              border: "none",
-              background: "none",
-              color: "#0d6efd",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
-            Create one here
-          </button>
-        </p>
-      </>
-    ) : (
-      <>
-        <SignUp />
-        <p style={{ marginTop: "1rem" }}>
-          Already have an account?{" "}
-          <button
-            onClick={() => setShowLogin(true)}
-            style={{
-              border: "none",
-              background: "none",
-              color: "#0d6efd",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
-            Log in here
-          </button>
-        </p>
-      </>
-    )}
-  </>
-)}
+        {/* 👤 Not logged in: show SignUp + Login forms */}
+        {!user && (
+          <>
+            {showLogin ? (
+              <>
+                <Login />
+                <p style={{ marginTop: "1rem" }}>
+                  Need an account?{" "}
+                  <button
+                    onClick={() => setShowLogin(false)}
+                    style={{
+                      border: "none",
+                      background: "none",
+                      color: "#0d6efd",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Create one here
+                  </button>
+                </p>
+              </>
+            ) : (
+              <>
+                <SignUp />
+                <p style={{ marginTop: "1rem" }}>
+                  Already have an account?{" "}
+                  <button
+                    onClick={() => setShowLogin(true)}
+                    style={{
+                      border: "none",
+                      background: "none",
+                      color: "#0d6efd",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Log in here
+                  </button>
+                </p>
+              </>
+            )}
+          </>
+        )}
 
-      {/* 👤 Logged in: show greeting, button, stats, logout */}
-      {user && (
-        <>
-          <p>Welcome back, {user.email}!</p>
+        {/* 👤 Logged in */}
+        {user && (
+          showProfile ? (
+            <UserProfile onBack={() => setShowProfile(false)} />
+          ) : (
+            <>
+              <p>Welcome back, {user.email}!</p>
 
-          {/* 🙏 Log a new prayer */}
-          <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
+              <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
+              <PrayerStats refreshKey={refreshKey} />
+              <LastPrayer refreshKey={refreshKey} />
+              <PrayerStreak refreshKey={refreshKey} />
+              <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
+              <PrayerMap refreshKey={refreshKey} />
 
-          {/* 📊 Show total prayer count */}
-          <PrayerStats refreshKey={refreshKey} />
+              <button
+                onClick={() => setShowProfile(true)}
+                style={{
+                  marginTop: "1rem",
+                  backgroundColor: "#198754",
+                  color: "#fff",
+                  padding: "0.5rem 1rem",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                ⚙️ Profile Settings
+              </button>
 
-          {/* 🕒 Show the most recent prayer time (or fallback if none) */}
-          <LastPrayer refreshKey={refreshKey} />
+              <button onClick={toggleTheme} style={{ marginTop: "1rem" }}>
+                {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+              </button>
 
-          {/* 🔥 Add streak tracker */}
-          <PrayerStreak refreshKey={refreshKey} />
+              <button onClick={handleLogout} style={styles.button}>
+                Log Out
+              </button>
+            </>
+          )
+        )}
+      </div>
 
-          
-
-          {/* 📜 Add the list below the stats */}
-          <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
-
-          <ToastContainer position="top-center" autoClose={3000} />
-
-          {/* 🌙 Dark mode button*/}
-          <button onClick={toggleTheme} style={{ marginBottom: "1rem" }}>
-            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </button>
-
-          <br />
-
-          {/* 🔓 Log out button */}
-          <button onClick={handleLogout} style={styles.button}>
-            Log Out
-          </button>
-          <PrayerMap refreshKey={refreshKey} />
-        </>
-        
-      )}
-    </div>
+      {/* 💬 Toasts should appear globally */}
+      <ToastContainer position="top-center" autoClose={3000} />
+    </>
   );
 }
 
