@@ -121,8 +121,7 @@ function App() {
             <>
               {/* 🙋‍♂️ Greet user by name or email */}
               <p>
-                Welcome back,{" "}
-                <strong>{userProfile?.name || user.email}</strong>!
+                Welcome back, <strong>{userProfile?.name || user.email}</strong>
               </p>
 
               {/* 🙏 Core functionality */}
