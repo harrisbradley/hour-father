@@ -2,7 +2,7 @@
 import { useAuth } from "./AuthContext";
 import { getAuth, signOut } from "firebase/auth";
 import { app, db } from "./firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 // 🧾 Page-level components
 import SignUp from "./pages/SignUp";
@@ -47,14 +47,30 @@ function App() {
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
+  
       const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
+  
       if (snap.exists()) {
-        setUserProfile(snap.data());
+        const data = snap.data();
+  
+        // If recordStreak is missing, set it to 0
+        if (!("recordStreak" in data)) {
+          await setDoc(
+            ref,
+            { recordStreak: 0 },
+            { merge: true } // ✅ Merge with existing data
+          );
+          data.recordStreak = 0;
+        }
+  
+        setUserProfile(data);
       }
     }
+  
     fetchProfile();
   }, [user]);
+  
 
   // 🚪 Log out the user
   async function handleLogout() {
