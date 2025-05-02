@@ -1,7 +1,16 @@
 // src/components/UserProfile.js
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 import { useAuth } from "../AuthContext";
 import { toast } from "react-toastify";
 
@@ -12,6 +21,7 @@ function UserProfile({ onBack }) {
   const [timeZone, setTimeZone] = useState("");
   const { user } = useAuth();
 
+  // 🔄 Load profile info from Firestore
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
@@ -29,6 +39,7 @@ function UserProfile({ onBack }) {
     fetchProfile();
   }, [user]);
 
+  // 💾 Save profile info to Firestore
   async function handleSaveProfile() {
     if (!user) return;
 
@@ -45,11 +56,34 @@ function UserProfile({ onBack }) {
     }
   }
 
+  // 🧹 Clear all prayers for the user
+  async function handleClearPrayerLog() {
+    if (!user) return;
+
+    const confirmed = window.confirm("Are you sure you want to delete all prayers?");
+    if (!confirmed) return;
+
+    try {
+      const q = query(collection(db, "prayers"), where("userId", "==", user.uid));
+      const snapshot = await getDocs(q);
+
+      const deletions = snapshot.docs.map((docSnap) =>
+        deleteDoc(doc(db, "prayers", docSnap.id))
+      );
+      await Promise.all(deletions);
+
+      toast.success("🗑️ Prayer log cleared!");
+    } catch (error) {
+      console.error("Error clearing prayer log:", error);
+      toast.error("❌ Failed to clear prayer log");
+    }
+  }
+
   return (
     <div style={styles.container}>
       <h2>User Profile ⚙️</h2>
 
-      {/* Name Input */}
+      {/* 🧍 Name Input */}
       <label style={styles.label}>
         Display Name:
         <input
@@ -61,7 +95,7 @@ function UserProfile({ onBack }) {
         />
       </label>
 
-      {/* Time Zone Input */}
+      {/* 🌍 Time Zone Dropdown */}
       <label style={styles.label}>
         Time Zone:
         <select
@@ -78,22 +112,25 @@ function UserProfile({ onBack }) {
         </select>
       </label>
 
-      {/* Save Button */}
+      {/* 💾 Save Button */}
       <button style={styles.button} onClick={handleSaveProfile}>
         💾 Save Changes
       </button>
 
       <hr style={{ margin: "2rem 0" }} />
 
-      {/* Clear Prayer Log */}
-      <button style={{ ...styles.button, backgroundColor: "#dc3545" }}>
+      {/* 🧹 Clear Prayer Log */}
+      <button
+        style={{ ...styles.button, backgroundColor: "#dc3545" }}
+        onClick={handleClearPrayerLog}
+      >
         🗑️ Clear Prayer Log
       </button>
 
-      {/* Change Password */}
+      {/* 🔐 Change Password (stub for future) */}
       <button style={styles.button}>🔒 Change Password</button>
 
-      {/* Back */}
+      {/* ⬅️ Back */}
       <button onClick={onBack} style={styles.backButton}>
         ⬅️ Back
       </button>
