@@ -66,3 +66,47 @@ export const container = {
     transform: "scale(1.02)",
   };
   
+
+  export const toggleContainer = {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    marginRight: "1rem",
+  };
+  
+  export const toggleSwitch = {
+    position: "relative",
+    width: "50px",
+    height: "24px",
+  };
+  
+  export const toggleCheckbox = {
+    opacity: 0,
+    width: 0,
+    height: 0,
+  };
+  
+  export const toggleSlider = {
+    position: "absolute",
+    cursor: "pointer",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#ccc",
+    borderRadius: "24px",
+    transition: "0.4s",
+  };
+  
+  export const toggleSliderBefore = {
+    content: '""',
+    position: "absolute",
+    height: "18px",
+    width: "18px",
+    left: "3px",
+    bottom: "3px",
+    backgroundColor: "white",
+    borderRadius: "50%",
+    transition: "0.4s",
+  };
+  

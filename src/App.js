@@ -37,26 +37,22 @@ function App() {
   const { darkMode, toggleTheme } = useTheme();
 
   // 🧠 App-level state
-  const [showLogin, setShowLogin] = useState(true); // toggle between login/signup
-  const [refreshKey, setRefreshKey] = useState(0); // for reloading prayer data
-  const [showProfile, setShowProfile] = useState(false); // profile screen toggle
-  const [userProfile, setUserProfile] = useState(null); // { name, timeZone }
-
-  // page
+  const [showLogin, setShowLogin] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [showProfile, setShowProfile] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
 
   // 🔄 Load user profile from Firestore
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
-
       const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
       if (snap.exists()) {
         setUserProfile(snap.data());
       }
     }
-
     fetchProfile();
   }, [user]);
 
@@ -67,11 +63,79 @@ function App() {
 
   return (
     <>
-      {/* 🎨 Themed app container */}
       <div style={getContainerStyles(darkMode)}>
         <h1>🙏 Hour Father 🙏</h1>
 
-        {/* 👥 If no user is logged in... show Login/Signup */}
+        {/* 🔧 Top-right: Theme switch + Profile button */}
+        {user && (
+          <div
+            style={{
+              position: "absolute",
+              top: "1rem",
+              right: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+            }}
+          >
+            {/* 🌙 Dark mode switch */}
+            <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span>{darkMode ? "🌙" : "☀️"}</span>
+              <div style={{ position: "relative", width: "50px", height: "24px" }}>
+                <input
+                  type="checkbox"
+                  checked={darkMode}
+                  onChange={toggleTheme}
+                  style={{ opacity: 0, width: 0, height: 0 }}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    cursor: "pointer",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: darkMode ? "#2196F3" : "#ccc",
+                    borderRadius: "24px",
+                    transition: "0.4s",
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      height: "18px",
+                      width: "18px",
+                      left: "3px",
+                      bottom: "3px",
+                      backgroundColor: "white",
+                      borderRadius: "50%",
+                      transition: "0.4s",
+                      transform: darkMode ? "translateX(26px)" : "translateX(0)",
+                    }}
+                  />
+                </span>
+              </div>
+            </label>
+
+            {/* ⚙️ Profile button */}
+            <button
+              onClick={() => setShowProfile(true)}
+              style={{
+                backgroundColor: "#198754",
+                color: "#fff",
+                padding: "0.5rem 1rem",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              ⚙️
+            </button>
+          </div>
+        )}
+
+        {/* 👥 Login / Signup */}
         {!user && (
           <>
             {showLogin ? (
@@ -116,20 +180,18 @@ function App() {
           </>
         )}
 
-        {/* 👤 If user is logged in... */}
+        {/* 👤 Logged-in view */}
         {user &&
           (showProfile ? (
-            // ⚙️ Profile view
             <UserProfile onBack={() => setShowProfile(false)} />
           ) : (
             <>
-              {/* 🙋‍♂️ Greet user by name or email */}
               <p>
                 Welcome back, <strong>{userProfile?.name || user.email}</strong>
               </p>
 
-              {/* 🙏 Core functionality */}
-              <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />              
+              <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
+              <br />
               <button
                 onClick={() => setShowPrayerModal(true)}
                 style={{
@@ -142,7 +204,8 @@ function App() {
                   cursor: "pointer",
                 }}
               >
-                📖 Show Our Father2
+                
+                📖 Show Our Father
               </button>
               <PrayerStats refreshKey={refreshKey} />
               <LastPrayer refreshKey={refreshKey} />
@@ -153,45 +216,25 @@ function App() {
                 userTimeZone={userProfile?.timeZone}
               />
 
-              {/* ⚙️ Settings & Appearance */}
-              <button
-                onClick={() => setShowProfile(true)}
-                style={{
-                  marginTop: "1rem",
-                  backgroundColor: "#198754",
-                  color: "#fff",
-                  padding: "0.5rem 1rem",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              >
-                ⚙️ Profile Settings
-              </button>
-
-              {/* 🌙 Theme Toggle */}
-              <button onClick={toggleTheme} style={{ marginTop: "1rem" }}>
-                {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-              </button>
-
-              {/* 🔓 Logout */}
               <button onClick={handleLogout} style={styles.button}>
                 Log Out
               </button>
             </>
           ))}
+
+        {/* 🙏 Modal: Our Father */}
         {showPrayerModal && (
           <OurFatherModal
             onClose={() => setShowPrayerModal(false)}
             onPrayed={() => {
-              setRefreshKey((k) => k + 1); // 🔄 trigger refresh
-              setShowPrayerModal(false); // ❌ close modal
+              setRefreshKey((k) => k + 1);
+              setShowPrayerModal(false);
             }}
           />
         )}
       </div>
 
-      {/* 💬 Toast notifications (non-blocking) */}
+      {/* 💬 Toast notifications */}
       <ToastContainer position="top-center" autoClose={3000} />
     </>
   );
