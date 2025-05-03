@@ -47,13 +47,13 @@ function App() {
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
-  
+
       const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
-  
+
       if (snap.exists()) {
         const data = snap.data();
-  
+
         // If recordStreak is missing, set it to 0
         if (!("recordStreak" in data)) {
           await setDoc(
@@ -63,14 +63,13 @@ function App() {
           );
           data.recordStreak = 0;
         }
-  
+
         setUserProfile(data);
       }
     }
-  
+
     fetchProfile();
   }, [user]);
-  
 
   // 🚪 Log out the user
   async function handleLogout() {
@@ -95,9 +94,13 @@ function App() {
             }}
           >
             {/* 🌙 Dark mode switch */}
-            <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <label
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
               <span>{darkMode ? "🌙" : "☀️"}</span>
-              <div style={{ position: "relative", width: "50px", height: "24px" }}>
+              <div
+                style={{ position: "relative", width: "50px", height: "24px" }}
+              >
                 <input
                   type="checkbox"
                   checked={darkMode}
@@ -127,7 +130,9 @@ function App() {
                       backgroundColor: "white",
                       borderRadius: "50%",
                       transition: "0.4s",
-                      transform: darkMode ? "translateX(26px)" : "translateX(0)",
+                      transform: darkMode
+                        ? "translateX(26px)"
+                        : "translateX(0)",
                     }}
                   />
                 </span>
@@ -220,17 +225,18 @@ function App() {
                   cursor: "pointer",
                 }}
               >
-                
                 📖 Show Our Father
               </button>
               <PrayerStats refreshKey={refreshKey} />
               <LastPrayer refreshKey={refreshKey} />
               <PrayerStreak refreshKey={refreshKey} />
               <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
-              <PrayerMap
-                refreshKey={refreshKey}
-                userTimeZone={userProfile?.timeZone}
-              />
+              {userProfile?.timeZone && (
+                <PrayerMap
+                  refreshKey={refreshKey}
+                  userTimeZone={userProfile.timeZone}
+                />
+              )}
 
               <button onClick={handleLogout} style={styles.button}>
                 Log Out
