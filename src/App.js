@@ -22,9 +22,9 @@ import OurFatherModal from "./components/OurFatherModal";
 import { useState, useEffect } from "react";
 
 // 🎨 Styling & Themes
-import * as styles from "./styles";
+import * as styles from "./styles/styles";
 import { useTheme } from "./ThemeContext";
-import { getContainerStyles } from "./styles";
+import { getContainerStyles } from "./styles/styles";
 
 // 🔔 Toast notifications
 import { ToastContainer } from "react-toastify";
