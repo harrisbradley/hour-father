@@ -10,6 +10,7 @@ function MainContent({
   user,
   userProfile,
   refreshKey,
+  setRefreshKey, // ✅ added this
   onShowProfile,
   onShowPrayerModal,
   onLogout,
@@ -22,7 +23,7 @@ function MainContent({
       </p>
 
       {/* 🙏 Primary Action Button */}
-      <PrayerButton onPrayed={() => refreshKey((k) => k + 1)} />
+      <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
 
       {/* 📖 Open modal with full prayer */}
       <button
@@ -47,7 +48,10 @@ function MainContent({
 
       {/* 🗺️ Map only if user profile has a time zone */}
       {userProfile?.timeZone && (
-        <PrayerMap refreshKey={refreshKey} userTimeZone={userProfile.timeZone} />
+        <PrayerMap
+          refreshKey={refreshKey}
+          userTimeZone={userProfile.timeZone}
+        />
       )}
 
       {/* 🔓 Log out */}

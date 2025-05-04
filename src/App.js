@@ -1,18 +1,30 @@
-// src/App.js
-import { useState } from "react";
-import { getAuth, signOut } from "firebase/auth";
+// 📦 Firebase & Authentication setup
 import { useAuth } from "./AuthContext";
+import { getAuth, signOut } from "firebase/auth";
 import { app } from "./firebase";
 
-// Components
+// 🧾 Page-level components
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-import UserProfile from "./components/UserProfile";
-import MainContent from "./components/MainContent";
-import Layout from "./components/Layout";
 
-// Styles & Context
+// 🧩 Core UI components
+import UserProfile from "./components/UserProfile";
+import OurFatherModal from "./components/OurFatherModal";
+import Header from "./components/Header";
+import MainContent from "./components/MainContent";
+
+// ⚛️ React tools
+import { useState } from "react";
+
+// 🎨 Styling & Themes
 import { useTheme } from "./ThemeContext";
+import { getContainerStyles } from "./styles/styles";
+
+// 🔔 Toast notifications
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// 🪝 Custom Hooks
 import { useUserProfile } from "./hooks/useUserProfile";
 
 function App() {
@@ -26,86 +38,99 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
 
+  // 🚪 Handle logout
   async function handleLogout() {
     await signOut(auth);
   }
 
+  // 🕒 Fallback while loading profile
   if (user && !userProfile) {
     return <div style={{ padding: "2rem" }}>Loading profile...</div>;
   }
 
   return (
-    <Layout
-      darkMode={darkMode}
-      userName={userProfile?.name}
-      onToggleProfile={() => setShowProfile(true)}
-      showPrayerModal={showPrayerModal}
-      onClosePrayerModal={() => setShowPrayerModal(false)}
-      onPrayed={() => {
-        setRefreshKey((k) => k + 1);
-        setShowPrayerModal(false);
-      }}
-    >
-      {!user ? (
-        showLogin ? (
-          <>
-            <Login />
-            <p style={{ marginTop: "1rem" }}>
-              Need an account?{" "}
-              <button
-                onClick={() => setShowLogin(false)}
-                style={{
-                  border: "none",
-                  background: "none",
-                  color: "#0d6efd",
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                }}
-              >
-                Create one here
-              </button>
-            </p>
-          </>
-        ) : (
-          <>
-            <SignUp />
-            <p style={{ marginTop: "1rem" }}>
-              Already have an account?{" "}
-              <button
-                onClick={() => setShowLogin(true)}
-                style={{
-                  border: "none",
-                  background: "none",
-                  color: "#0d6efd",
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                }}
-              >
-                Log in here
-              </button>
-            </p>
-          </>
-        )
-      ) : showProfile ? (
-        <UserProfile onBack={() => setShowProfile(false)} />
-      ) : (
-        <>
-          <p>
-            Welcome back, <strong>{userProfile?.name || user.email}</strong>
-          </p>
+    <>
+      <div style={getContainerStyles(darkMode)}>
+        <Header
+          onToggleProfile={() => setShowProfile(true)}
+          userName={userProfile?.name}
+        />
 
-          <MainContent
-            user={user}
-            userProfile={userProfile}
-            refreshKey={refreshKey}
-            onShowProfile={() => setShowProfile(true)}
-            onShowPrayerModal={() => setShowPrayerModal(true)}
-            onLogout={handleLogout}
-            darkMode={darkMode}
+        {/* 🔐 Login / Signup */}
+        {!user && (
+          <>
+            {showLogin ? (
+              <>
+                <Login />
+                <p style={{ marginTop: "1rem" }}>
+                  Need an account?{" "}
+                  <button
+                    onClick={() => setShowLogin(false)}
+                    style={{
+                      border: "none",
+                      background: "none",
+                      color: "#0d6efd",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Create one here
+                  </button>
+                </p>
+              </>
+            ) : (
+              <>
+                <SignUp />
+                <p style={{ marginTop: "1rem" }}>
+                  Already have an account?{" "}
+                  <button
+                    onClick={() => setShowLogin(true)}
+                    style={{
+                      border: "none",
+                      background: "none",
+                      color: "#0d6efd",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Log in here
+                  </button>
+                </p>
+              </>
+            )}
+          </>
+        )}
+
+        {/* 👤 Logged-in content */}
+        {user &&
+          (showProfile ? (
+            <UserProfile onBack={() => setShowProfile(false)} />
+          ) : (
+            <MainContent
+              user={user}
+              userProfile={userProfile}
+              refreshKey={refreshKey}
+              setRefreshKey={setRefreshKey} // ✅ Pass the setter
+              onShowProfile={() => setShowProfile(true)}
+              onShowPrayerModal={() => setShowPrayerModal(true)}
+              onLogout={handleLogout}
+              darkMode={darkMode}
+            />
+          ))}
+
+        {/* 🙏 Prayer modal */}
+        {showPrayerModal && (
+          <OurFatherModal
+            onClose={() => setShowPrayerModal(false)}
+            onPrayed={() => {
+              setRefreshKey((k) => k + 1);
+              setShowPrayerModal(false);
+            }}
           />
-        </>
-      )}
-    </Layout>
+        )}
+      </div>
+      <ToastContainer position="top-center" autoClose={3000} />
+    </>
   );
 }
 
