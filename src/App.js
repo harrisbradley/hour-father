@@ -17,6 +17,7 @@ import PrayerStreak from "./components/PrayerStreak";
 import PrayerMap from "./components/PrayerMap";
 import UserProfile from "./components/UserProfile";
 import OurFatherModal from "./components/OurFatherModal";
+import Header from "./components/Header";
 
 // ⚛️ React tools
 import { useState, useEffect } from "react";
@@ -79,7 +80,10 @@ function App() {
   return (
     <>
       <div style={getContainerStyles(darkMode)}>
-        <h1>🙏 Hour Father 🙏</h1>
+        <Header
+          onToggleProfile={() => setShowProfile(true)}
+          userName={userProfile?.name}
+        />
 
         {/* 🔧 Top-right: Theme switch + Profile button */}
         {user && (
