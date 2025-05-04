@@ -9,15 +9,18 @@ export function useUserProfile(user) {
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
+
       const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
 
       if (snap.exists()) {
         const data = snap.data();
+
         if (!("recordStreak" in data)) {
           await setDoc(ref, { recordStreak: 0 }, { merge: true });
           data.recordStreak = 0;
         }
+
         setUserProfile(data);
       }
     }
@@ -25,5 +28,5 @@ export function useUserProfile(user) {
     fetchProfile();
   }, [user]);
 
-  return userProfile;
+  return { userProfile };
 }

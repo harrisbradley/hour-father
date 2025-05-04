@@ -1,8 +1,7 @@
 // 📦 Firebase & Authentication setup
 import { useAuth } from "./AuthContext";
 import { getAuth, signOut } from "firebase/auth";
-import { app, db } from "./firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { app } from "./firebase";
 
 // 🧾 Page-level components
 import SignUp from "./pages/SignUp";
@@ -15,7 +14,7 @@ import Header from "./components/Header";
 import MainContent from "./components/MainContent";
 
 // ⚛️ React tools
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // 🎨 Styling & Themes
 import { useTheme } from "./ThemeContext";
@@ -25,56 +24,39 @@ import { getContainerStyles } from "./styles/styles";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// 🪝 Custom Hooks
+import { useUserProfile } from "./hooks/useUserProfile";
+
 function App() {
   const { user } = useAuth();
   const auth = getAuth(app);
   const { darkMode } = useTheme();
 
+  const { userProfile } = useUserProfile(user);
   const [showLogin, setShowLogin] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showProfile, setShowProfile] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
-
-  // 🔄 Fetch user profile on login
-  useEffect(() => {
-    async function fetchProfile() {
-      if (!user) return;
-
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-
-      if (snap.exists()) {
-        const data = snap.data();
-
-        // Ensure recordStreak is present
-        if (!("recordStreak" in data)) {
-          await setDoc(ref, { recordStreak: 0 }, { merge: true });
-          data.recordStreak = 0;
-        }
-
-        setUserProfile(data);
-      }
-    }
-
-    fetchProfile();
-  }, [user]);
 
   // 🚪 Handle logout
   async function handleLogout() {
     await signOut(auth);
   }
 
+  // 🕒 Fallback while loading profile
+  if (user && !userProfile) {
+    return <div style={{ padding: "2rem" }}>Loading profile...</div>;
+  }
+
   return (
     <>
       <div style={getContainerStyles(darkMode)}>
-        {/* 🧭 Header with toggle + profile button */}
         <Header
           onToggleProfile={() => setShowProfile(true)}
           userName={userProfile?.name}
         />
 
-        {/* 🔐 Auth Flow (Login/Signup) */}
+        {/* 🔐 Login / Signup */}
         {!user && (
           <>
             {showLogin ? (
@@ -119,7 +101,7 @@ function App() {
           </>
         )}
 
-        {/* 👤 Logged-in View */}
+        {/* 👤 Logged-in content */}
         {user &&
           (showProfile ? (
             <UserProfile onBack={() => setShowProfile(false)} />
@@ -141,7 +123,7 @@ function App() {
             </>
           ))}
 
-        {/* 🙏 Our Father Prayer Modal */}
+        {/* 🙏 Prayer modal */}
         {showPrayerModal && (
           <OurFatherModal
             onClose={() => setShowPrayerModal(false)}
@@ -152,8 +134,6 @@ function App() {
           />
         )}
       </div>
-
-      {/* 💬 Toast notifications */}
       <ToastContainer position="top-center" autoClose={3000} />
     </>
   );
