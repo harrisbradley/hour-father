@@ -26,7 +26,7 @@ import Header from "./components/Header";
 import MainContent from "./components/MainContent";
 import UserProfile from "./components/UserProfile";
 import OurFatherModal from "./components/OurFatherModal";
-
+import AuthFormSwitcher from "./components/AuthFormSwitcher"; // at the top
 
 function App() {
   const { user } = useAuth();
@@ -60,45 +60,13 @@ function App() {
         {/* 🔐 Login / Signup */}
         {!user && (
           <>
-            {showLogin ? (
-              <>
-                <Login />
-                <p style={{ marginTop: "1rem" }}>
-                  Need an account?{" "}
-                  <button
-                    onClick={() => setShowLogin(false)}
-                    style={{
-                      border: "none",
-                      background: "none",
-                      color: "#0d6efd",
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                    }}
-                  >
-                    Create one here
-                  </button>
-                </p>
-              </>
-            ) : (
-              <>
-                <SignUp />
-                <p style={{ marginTop: "1rem" }}>
-                  Already have an account?{" "}
-                  <button
-                    onClick={() => setShowLogin(true)}
-                    style={{
-                      border: "none",
-                      background: "none",
-                      color: "#0d6efd",
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                    }}
-                  >
-                    Log in here
-                  </button>
-                </p>
-              </>
-            )}
+            
+            <AuthFormSwitcher
+              showLogin={showLogin}
+              onToggle={() => setShowLogin(!showLogin)}
+            >
+              {showLogin ? <Login /> : <SignUp />}
+            </AuthFormSwitcher>
           </>
         )}
 
