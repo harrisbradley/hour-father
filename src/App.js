@@ -1,31 +1,32 @@
-// 📦 Firebase & Authentication setup
-import { useAuth } from "./AuthContext";
-import { getAuth, signOut } from "firebase/auth";
-import { app } from "./firebase";
-
-// 🧾 Page-level components
-import SignUp from "./pages/SignUp";
-import Login from "./pages/Login";
-
-// 🧩 Core UI components
-import UserProfile from "./components/UserProfile";
-import OurFatherModal from "./components/OurFatherModal";
-import Header from "./components/Header";
-import MainContent from "./components/MainContent";
-
-// ⚛️ React tools
+// ⚛️ Core React
 import { useState } from "react";
 
-// 🎨 Styling & Themes
+// 🔐 Firebase & Auth
+import { getAuth, signOut } from "firebase/auth";
+import { app } from "./firebase";
+import { useAuth } from "./AuthContext";
+
+// 🎨 Theming & Styles
 import { useTheme } from "./ThemeContext";
 import { getContainerStyles } from "./styles/styles";
 
-// 🔔 Toast notifications
+// 🔔 Toast Notifications
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // 🪝 Custom Hooks
 import { useUserProfile } from "./hooks/useUserProfile";
+
+// 🧾 Top-level Pages
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
+
+// 🧩 App Components
+import Header from "./components/Header";
+import MainContent from "./components/MainContent";
+import UserProfile from "./components/UserProfile";
+import OurFatherModal from "./components/OurFatherModal";
+
 
 function App() {
   const { user } = useAuth();
