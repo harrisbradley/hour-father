@@ -9,21 +9,15 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 
 // 🧩 Core UI components
-import PrayerButton from "./components/PrayerButton";
-import PrayerStats from "./components/PrayerStats";
-import LastPrayer from "./components/LastPrayer";
-import PrayerLog from "./components/PrayerLog";
-import PrayerStreak from "./components/PrayerStreak";
-import PrayerMap from "./components/PrayerMap";
 import UserProfile from "./components/UserProfile";
 import OurFatherModal from "./components/OurFatherModal";
 import Header from "./components/Header";
+import MainContent from "./components/MainContent";
 
 // ⚛️ React tools
 import { useState, useEffect } from "react";
 
 // 🎨 Styling & Themes
-import * as styles from "./styles/styles";
 import { useTheme } from "./ThemeContext";
 import { getContainerStyles } from "./styles/styles";
 
@@ -32,19 +26,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  // 🔐 Auth + Theme
   const { user } = useAuth();
   const auth = getAuth(app);
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode } = useTheme();
 
-  // 🧠 App-level state
   const [showLogin, setShowLogin] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showProfile, setShowProfile] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
 
-  // 🔄 Load user profile from Firestore
+  // 🔄 Fetch user profile on login
   useEffect(() => {
     async function fetchProfile() {
       if (!user) return;
@@ -55,13 +47,9 @@ function App() {
       if (snap.exists()) {
         const data = snap.data();
 
-        // If recordStreak is missing, set it to 0
+        // Ensure recordStreak is present
         if (!("recordStreak" in data)) {
-          await setDoc(
-            ref,
-            { recordStreak: 0 },
-            { merge: true } // ✅ Merge with existing data
-          );
+          await setDoc(ref, { recordStreak: 0 }, { merge: true });
           data.recordStreak = 0;
         }
 
@@ -72,7 +60,7 @@ function App() {
     fetchProfile();
   }, [user]);
 
-  // 🚪 Log out the user
+  // 🚪 Handle logout
   async function handleLogout() {
     await signOut(auth);
   }
@@ -80,87 +68,13 @@ function App() {
   return (
     <>
       <div style={getContainerStyles(darkMode)}>
+        {/* 🧭 Header with toggle + profile button */}
         <Header
           onToggleProfile={() => setShowProfile(true)}
           userName={userProfile?.name}
         />
 
-        {/* 🔧 Top-right: Theme switch + Profile button */}
-        {user && (
-          <div
-            style={{
-              position: "absolute",
-              top: "1rem",
-              right: "1rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            {/* 🌙 Dark mode switch */}
-            <label
-              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-            >
-              <span>{darkMode ? "🌙" : "☀️"}</span>
-              <div
-                style={{ position: "relative", width: "50px", height: "24px" }}
-              >
-                <input
-                  type="checkbox"
-                  checked={darkMode}
-                  onChange={toggleTheme}
-                  style={{ opacity: 0, width: 0, height: 0 }}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    cursor: "pointer",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: darkMode ? "#2196F3" : "#ccc",
-                    borderRadius: "24px",
-                    transition: "0.4s",
-                  }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      height: "18px",
-                      width: "18px",
-                      left: "3px",
-                      bottom: "3px",
-                      backgroundColor: "white",
-                      borderRadius: "50%",
-                      transition: "0.4s",
-                      transform: darkMode
-                        ? "translateX(26px)"
-                        : "translateX(0)",
-                    }}
-                  />
-                </span>
-              </div>
-            </label>
-
-            {/* ⚙️ Profile button */}
-            <button
-              onClick={() => setShowProfile(true)}
-              style={{
-                backgroundColor: "#198754",
-                color: "#fff",
-                padding: "0.5rem 1rem",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
-            >
-              ⚙️
-            </button>
-          </div>
-        )}
-
-        {/* 👥 Login / Signup */}
+        {/* 🔐 Auth Flow (Login/Signup) */}
         {!user && (
           <>
             {showLogin ? (
@@ -205,7 +119,7 @@ function App() {
           </>
         )}
 
-        {/* 👤 Logged-in view */}
+        {/* 👤 Logged-in View */}
         {user &&
           (showProfile ? (
             <UserProfile onBack={() => setShowProfile(false)} />
@@ -215,40 +129,19 @@ function App() {
                 Welcome back, <strong>{userProfile?.name || user.email}</strong>
               </p>
 
-              <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
-              <br />
-              <button
-                onClick={() => setShowPrayerModal(true)}
-                style={{
-                  marginTop: "1rem",
-                  padding: "0.5rem 1rem",
-                  backgroundColor: "#0d6efd",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              >
-                📖 Show Our Father
-              </button>
-              <PrayerStats refreshKey={refreshKey} />
-              <LastPrayer refreshKey={refreshKey} />
-              <PrayerStreak refreshKey={refreshKey} />
-              <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
-              {userProfile?.timeZone && (
-                <PrayerMap
-                  refreshKey={refreshKey}
-                  userTimeZone={userProfile.timeZone}
-                />
-              )}
-
-              <button onClick={handleLogout} style={styles.button}>
-                Log Out
-              </button>
+              <MainContent
+                user={user}
+                userProfile={userProfile}
+                refreshKey={refreshKey}
+                onShowProfile={() => setShowProfile(true)}
+                onShowPrayerModal={() => setShowPrayerModal(true)}
+                onLogout={handleLogout}
+                darkMode={darkMode}
+              />
             </>
           ))}
 
-        {/* 🙏 Modal: Our Father */}
+        {/* 🙏 Our Father Prayer Modal */}
         {showPrayerModal && (
           <OurFatherModal
             onClose={() => setShowPrayerModal(false)}
