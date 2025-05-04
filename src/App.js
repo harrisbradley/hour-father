@@ -1,32 +1,19 @@
-// ⚛️ Core React
+// src/App.js
 import { useState } from "react";
-
-// 🔐 Firebase & Auth
 import { getAuth, signOut } from "firebase/auth";
-import { app } from "./firebase";
 import { useAuth } from "./AuthContext";
+import { app } from "./firebase";
 
-// 🎨 Theming & Styles
-import { useTheme } from "./ThemeContext";
-import { getContainerStyles } from "./styles/styles";
-
-// 🔔 Toast Notifications
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-// 🪝 Custom Hooks
-import { useUserProfile } from "./hooks/useUserProfile";
-
-// 🧾 Top-level Pages
+// Components
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-
-// 🧩 App Components
-import Header from "./components/Header";
-import MainContent from "./components/MainContent";
 import UserProfile from "./components/UserProfile";
-import OurFatherModal from "./components/OurFatherModal";
-import AuthFormSwitcher from "./components/AuthFormSwitcher"; // at the top
+import MainContent from "./components/MainContent";
+import Layout from "./components/Layout";
+
+// Styles & Context
+import { useTheme } from "./ThemeContext";
+import { useUserProfile } from "./hooks/useUserProfile";
 
 function App() {
   const { user } = useAuth();
@@ -39,72 +26,86 @@ function App() {
   const [showProfile, setShowProfile] = useState(false);
   const [showPrayerModal, setShowPrayerModal] = useState(false);
 
-  // 🚪 Handle logout
   async function handleLogout() {
     await signOut(auth);
   }
 
-  // 🕒 Fallback while loading profile
   if (user && !userProfile) {
     return <div style={{ padding: "2rem" }}>Loading profile...</div>;
   }
 
   return (
-    <>
-      <div style={getContainerStyles(darkMode)}>
-        <Header
-          onToggleProfile={() => setShowProfile(true)}
-          userName={userProfile?.name}
-        />
-
-        {/* 🔐 Login / Signup */}
-        {!user && (
+    <Layout
+      darkMode={darkMode}
+      userName={userProfile?.name}
+      onToggleProfile={() => setShowProfile(true)}
+      showPrayerModal={showPrayerModal}
+      onClosePrayerModal={() => setShowPrayerModal(false)}
+      onPrayed={() => {
+        setRefreshKey((k) => k + 1);
+        setShowPrayerModal(false);
+      }}
+    >
+      {!user ? (
+        showLogin ? (
           <>
-            
-            <AuthFormSwitcher
-              showLogin={showLogin}
-              onToggle={() => setShowLogin(!showLogin)}
-            >
-              {showLogin ? <Login /> : <SignUp />}
-            </AuthFormSwitcher>
+            <Login />
+            <p style={{ marginTop: "1rem" }}>
+              Need an account?{" "}
+              <button
+                onClick={() => setShowLogin(false)}
+                style={{
+                  border: "none",
+                  background: "none",
+                  color: "#0d6efd",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                Create one here
+              </button>
+            </p>
           </>
-        )}
+        ) : (
+          <>
+            <SignUp />
+            <p style={{ marginTop: "1rem" }}>
+              Already have an account?{" "}
+              <button
+                onClick={() => setShowLogin(true)}
+                style={{
+                  border: "none",
+                  background: "none",
+                  color: "#0d6efd",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                Log in here
+              </button>
+            </p>
+          </>
+        )
+      ) : showProfile ? (
+        <UserProfile onBack={() => setShowProfile(false)} />
+      ) : (
+        <>
+          <p>
+            Welcome back, <strong>{userProfile?.name || user.email}</strong>
+          </p>
 
-        {/* 👤 Logged-in content */}
-        {user &&
-          (showProfile ? (
-            <UserProfile onBack={() => setShowProfile(false)} />
-          ) : (
-            <>
-              <p>
-                Welcome back, <strong>{userProfile?.name || user.email}</strong>
-              </p>
-
-              <MainContent
-                user={user}
-                userProfile={userProfile}
-                refreshKey={refreshKey}
-                onShowProfile={() => setShowProfile(true)}
-                onShowPrayerModal={() => setShowPrayerModal(true)}
-                onLogout={handleLogout}
-                darkMode={darkMode}
-              />
-            </>
-          ))}
-
-        {/* 🙏 Prayer modal */}
-        {showPrayerModal && (
-          <OurFatherModal
-            onClose={() => setShowPrayerModal(false)}
-            onPrayed={() => {
-              setRefreshKey((k) => k + 1);
-              setShowPrayerModal(false);
-            }}
+          <MainContent
+            user={user}
+            userProfile={userProfile}
+            refreshKey={refreshKey}
+            onShowProfile={() => setShowProfile(true)}
+            onShowPrayerModal={() => setShowPrayerModal(true)}
+            onLogout={handleLogout}
+            darkMode={darkMode}
           />
-        )}
-      </div>
-      <ToastContainer position="top-center" autoClose={3000} />
-    </>
+        </>
+      )}
+    </Layout>
   );
 }
 
