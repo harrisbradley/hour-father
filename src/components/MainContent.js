@@ -5,6 +5,8 @@ import LastPrayer from "./LastPrayer";
 import PrayerStreak from "./PrayerStreak";
 import PrayerLog from "./PrayerLog";
 import PrayerMap from "./PrayerMap";
+import StatsSection from "./StatsSection";
+
 
 function MainContent({
   user,
@@ -41,9 +43,7 @@ function MainContent({
         📖 Show Our Father
       </button>
 
-      <PrayerStats refreshKey={refreshKey} />
-      <LastPrayer refreshKey={refreshKey} />
-      <PrayerStreak refreshKey={refreshKey} />
+      <StatsSection refreshKey={refreshKey} />
       <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
 
       {/* 🗺️ Map only if user profile has a time zone */}
