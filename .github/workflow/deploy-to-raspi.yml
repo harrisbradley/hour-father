@@ -1,0 +1,59 @@
+name: Deploy React App to Raspberry Pi
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.RASPI_SSH_KEY }}
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          tags: tag:github-actions
+
+      - name: Add host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -p ${{ secrets.RASPI_PORT }} -H ${{ secrets.RASPI_HOST }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy production build
+        run: |
+          rsync -avz --delete \
+            -e "ssh -p ${{ secrets.RASPI_PORT }}" \
+            ./build/ \
+            ${{ secrets.RASPI_USER }}@${{ secrets.RASPI_HOST }}:${{ secrets.RASPI_PATH }}
+
+      - name: Reload nginx
+        run: |
+          ssh -p ${{ secrets.RASPI_PORT }} \
+            ${{ secrets.RASPI_USER }}@${{ secrets.RASPI_HOST }} \
+            "sudo -n systemctl reload nginx"
