@@ -1,70 +1,92 @@
-# Getting Started with Create React App!
+# 🙏 Hour Father
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### *Daily Prayer Habit Tracker and Spiritual Journey Map*
 
-## Available Scriptss
+**Hour Father** is a beautiful, reflective React web application designed to encourage regular prayer, specifically focusing on the "Our Father" (Lord's Prayer). It helps users build a consistent daily prayer routine by tracking streaks, logging prayer history, graphing statistics, and plotting prayer locations on an interactive spiritual map.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## ✝️ Key Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 📿 1. Guided Prayer & Logging
+- **Guided Prayer Modal**: Opens a serene interface to guide you through reciting the "Our Father" with step-by-step reflection.
+- **1-Click Logging**: Log your completed prayers instantly to your profile.
+- **Elapsed Timer (Last Prayer)**: Displays a live counter showing the exact time (hours and minutes) elapsed since your last logged prayer to encourage regular (e.g. hourly) connection.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🔥 2. Streak & Habit System
+- **Streak Counters**: Displays your current consecutive daily prayer streak alongside your all-time record streak.
+- **Streak Protection**: Features smart algorithms to track daily engagement and reward consistency.
+- **Confetti Celebration**: Bursts of visual celebration when hitting daily milestones or setting new record streaks.
 
-### `npm test`
+### 🗺️ 3. Interactive Prayer Map
+- **Location Logging**: Prompts for device geolocation when a prayer is logged.
+- **Spiritual Travel Map**: Plots all the geographic locations where you have prayed on an interactive map, creating a visual testimony of your prayer journey.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 📊 4. Prayer Statistics & Logs
+- **Visual Trends**: Charts showing your weekly and monthly prayer frequency to help you monitor your habit consistency.
+- **Visits Log**: A historical scroll of all past prayers with exact timestamps, notes, and coordinates.
 
-### `npm run build`
+### 🌗 5. UI Customization & Security
+- **Dark & Light Themes**: Soft dark mode togglable via a top switch for comfortable nighttime prayer.
+- **Secure Synchronization**: Firebase Firestore cloud synchronization tracks your habits and maps across devices.
+- **Secure Authentication**: Email/Password sign-up and login support.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Technology Stack
+- **Framework**: React (Create React App)
+- **Database/Auth**: Firebase Firestore & Firebase Authentication
+- **Mapping**: Leaflet / OpenStreetMap (or Google Maps APIs)
+- **Theme**: Custom CSS with native dark/light context variables
+- **Notifications**: React Toastify & Canvas Confetti
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
+You will need a [Firebase](https://firebase.google.com/) web project with:
+- **Authentication** (Email/Password provider enabled)
+- **Firestore Database** enabled
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/harrisbradley/hour-father.git
+cd hour-father
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 2. Configure Firebase
+Create a `src/firebase.js` (or edit the existing one) with your Firebase config values:
+```javascript
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-## Learn More
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 3. Install Dependencies
+```bash
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Run Locally
+```bash
+npm start
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📜 License
+Built for the encouragement of prayer and spiritual growth. Pray without ceasing!
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
