@@ -1,15 +1,9 @@
 // src/components/PrayerLog.js
 import { useEffect, useState } from "react";
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  getDocs,
-  limit
-} from "firebase/firestore";
+import { collection, query, where, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
+import { colors, fonts } from "../styles/ui";
 
 function PrayerLog({ darkMode, refreshKey }) {
   const { user } = useAuth();
@@ -33,7 +27,8 @@ function PrayerLog({ darkMode, refreshKey }) {
           const data = doc.data();
           return {
             id: doc.id,
-            prayedAt: data.prayedAt?.toDate()
+            prayedAt: data.prayedAt?.toDate(),
+            hasLocation: !!(data.location?.lat && data.location?.lng),
           };
         });
 
@@ -49,39 +44,90 @@ function PrayerLog({ darkMode, refreshKey }) {
   return (
     <div
       style={{
-        marginTop: "2rem",
-        maxWidth: "400px",
-        marginInline: "auto",
-        backgroundColor: darkMode ? "#1e293b" : "#ffffff",
-        border: darkMode ? "1px solid rgba(245, 197, 24, 0.2)" : "1px solid #e2e8f0",
-        borderRadius: "12px",
-        padding: "1.25rem",
-        color: darkMode ? "#f8fafc" : "#0f172a",
-        boxShadow: darkMode ? "0 4px 12px rgba(0,0,0,0.2)" : "0 2px 8px rgba(0,0,0,0.05)",
+        marginTop: "2.5rem",
+        padding: "1.5rem",
+        backgroundColor: darkMode ? colors.darkCardBg : colors.lightCardBg,
+        border: darkMode
+          ? `1px solid ${colors.subtleGoldBorder}`
+          : "1px solid #e2e8f0",
+        borderRadius: "16px",
+        boxShadow: darkMode
+          ? "0 8px 24px rgba(0,0,0,0.4)"
+          : "0 4px 12px rgba(0,0,0,0.05)",
       }}
     >
-      <h3 style={{ margin: "0 0 1rem 0", fontSize: "1.1rem" }}>📜 Last 5 Prayers</h3>
+      <h3
+        style={{
+          margin: "0 0 1.2rem 0",
+          fontFamily: fonts.sacred,
+          fontSize: "1.15rem",
+          color: darkMode ? colors.accent : colors.primary,
+          textAlign: "left",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+        }}
+      >
+        <span>📜</span> Recent Prayer History
+      </h3>
+
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {prayers.map((prayer) => (
           <li
             key={prayer.id}
             style={{
-              borderBottom: darkMode ? "1px solid #334155" : "1px solid #f1f5f9",
-              padding: "0.5rem 0",
-              fontSize: "0.95rem"
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: darkMode
+                ? "1px solid rgba(255,255,255,0.08)"
+                : "1px solid #f1f5f9",
+              padding: "0.75rem 0",
+              fontSize: "0.95rem",
+              fontFamily: fonts.body,
             }}
           >
-            {prayer.prayedAt
-              ? prayer.prayedAt.toLocaleString(undefined, {
-                  dateStyle: "medium",
-                  timeStyle: "short"
-                })
-              : "Pending..."}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+              <span style={{ color: darkMode ? colors.accent : colors.primary }}>
+                🙏
+              </span>
+              <span>
+                {prayer.prayedAt
+                  ? prayer.prayedAt.toLocaleString(undefined, {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })
+                  : "Pending..."}
+              </span>
+            </div>
+
+            {prayer.hasLocation && (
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  padding: "0.2rem 0.6rem",
+                  backgroundColor: "rgba(245, 197, 24, 0.15)",
+                  color: colors.accent,
+                  borderRadius: "10px",
+                  fontWeight: 600,
+                }}
+              >
+                📍 Location Saved
+              </span>
+            )}
           </li>
         ))}
+
         {prayers.length === 0 && (
-          <li style={{ fontStyle: "italic", color: darkMode ? "#94a3b8" : "#64748b" }}>
-            No prayers logged yet.
+          <li
+            style={{
+              fontStyle: "italic",
+              color: darkMode ? "#94a3b8" : "#64748b",
+              textAlign: "center",
+              padding: "1rem 0",
+            }}
+          >
+            No prayers logged yet. Begin your journey today!
           </li>
         )}
       </ul>

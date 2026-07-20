@@ -1,27 +1,30 @@
 // src/styles/ui.js
 
-// 🎨 Marian Blue & Gold Theme Tokens
+// 🎨 Marian Blue & Sacred Gold Palette Tokens
 export const colors = {
-  primary: "#0044a7",      // Marian Blue
-  primaryHover: "#003482",
-  accent: "#f5c518",       // Sacred Gold
-  accentHover: "#d8ab0c",
-  danger: "#dc3545",
-  dangerHover: "#bd2130",
-  neutral: "#6c757d",
+  primary: "#003884",         // Deep Marian Blue
+  primaryHover: "#002866",
+  accent: "#f5c518",          // Sacred Gold
+  accentHover: "#d4af37",
+  goldGlow: "rgba(245, 197, 24, 0.35)",
+  danger: "#ef4444",
+  dangerHover: "#dc2626",
+  neutral: "#64748b",
   lightBg: "#f8fafc",
-  darkBg: "#0f172a",       // Deep Sacred Midnight
-  darkCardBg: "#1e293b",
+  darkBg: "#090d16",          // Deep Sanctuary Midnight
+  darkCardBg: "#131b2e",
   lightCardBg: "#ffffff",
   lightText: "#0f172a",
   darkText: "#f8fafc",
-  subtleGoldBorder: "rgba(245, 197, 24, 0.25)",
+  subtleGoldBorder: "rgba(245, 197, 24, 0.22)",
+  goldGradient: "linear-gradient(135deg, #f5c518 0%, #d4af37 100%)",
+  marianGradient: "linear-gradient(135deg, #003884 0%, #0a4f9e 100%)",
 };
 
-// 📐 Layout & Spacing
+// 📐 Layout & Container
 export const layout = {
   container: {
-    maxWidth: "840px",
+    maxWidth: "860px",
     margin: "0 auto",
     padding: "0",
   },
@@ -30,49 +33,70 @@ export const layout = {
   },
 };
 
-// 🖋️ Typography
+// 🖋️ Typography Systems (Cinzel, Outfit, Inter)
+export const fonts = {
+  sacred: "'Cinzel', serif",
+  numeric: "'Outfit', sans-serif",
+  body: "'Inter', sans-serif",
+};
+
 export const typography = {
-  heading: {
-    fontFamily: "'Segoe UI', Roboto, sans-serif",
-    fontSize: "2rem",
-    fontWeight: "bold",
-    marginBottom: "1rem",
+  sacredHeading: {
+    fontFamily: fonts.sacred,
+    fontWeight: "700",
+    letterSpacing: "-0.01em",
   },
-  subheading: {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-    marginBottom: "0.5rem",
+  numericTimer: {
+    fontFamily: fonts.numeric,
+    fontWeight: "700",
+    letterSpacing: "0.05em",
   },
   body: {
+    fontFamily: fonts.body,
     fontSize: "1rem",
     lineHeight: "1.6",
   },
 };
 
-// 🔘 Button Variants
+// 🔘 Reusable Button Variants
 export const buttons = {
   base: {
-    padding: "0.65rem 1.4rem",
+    fontFamily: fonts.body,
+    padding: "0.7rem 1.5rem",
     fontSize: "0.95rem",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "10px",
     cursor: "pointer",
     fontWeight: "600",
-    transition: "all 0.2s ease-in-out",
+    transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     gap: "0.5rem",
   },
-  primary: {
-    backgroundColor: colors.primary,
+  hero: {
+    fontFamily: fonts.sacred,
+    background: colors.marianGradient,
     color: "#ffffff",
-    boxShadow: "0 4px 10px rgba(0, 68, 167, 0.25)",
+    border: `2px solid ${colors.accent}`,
+    borderRadius: "16px",
+    padding: "1.2rem 2.8rem",
+    fontSize: "1.25rem",
+    fontWeight: "700",
+    letterSpacing: "0.03em",
+    boxShadow: `0 8px 24px ${colors.goldGlow}`,
+    cursor: "pointer",
+  },
+  primary: {
+    background: colors.marianGradient,
+    color: "#ffffff",
+    boxShadow: "0 4px 12px rgba(0, 56, 132, 0.3)",
   },
   accent: {
-    backgroundColor: colors.accent,
-    color: "#0f172a",
-    boxShadow: "0 4px 10px rgba(245, 197, 24, 0.3)",
+    background: colors.goldGradient,
+    color: "#090d16",
+    fontWeight: "700",
+    boxShadow: `0 4px 14px ${colors.goldGlow}`,
   },
   secondary: {
     backgroundColor: colors.neutral,
@@ -84,26 +108,26 @@ export const buttons = {
   },
   outline: {
     backgroundColor: "transparent",
-    border: `2px solid ${colors.primary}`,
-    color: colors.primary,
+    border: `2px solid ${colors.accent}`,
+    color: colors.accent,
   },
 };
 
-// 🃏 Card Component Tokens
+// 🃏 Glassmorphic Card Components
 export const cards = {
   base: {
-    borderRadius: "12px",
-    padding: "1.25rem",
-    transition: "all 0.2s ease",
+    borderRadius: "16px",
+    padding: "1.5rem",
+    transition: "all 0.25s ease-in-out",
   },
   light: {
     backgroundColor: colors.lightCardBg,
     border: "1px solid #e2e8f0",
-    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.04)",
   },
   dark: {
     backgroundColor: colors.darkCardBg,
     border: `1px solid ${colors.subtleGoldBorder}`,
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
   },
 };

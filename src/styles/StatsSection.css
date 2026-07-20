@@ -1,6 +1,5 @@
-/* 📊 StatsSection.css – Styles for grouping prayer stats responsively */
+/* 📊 StatsSection.css – Responsive glassmorphic stats cards */
 
-/* 📱 Default: Mobile-first layout – stack vertically */
 .stats-section {
   display: flex;
   flex-direction: column;
@@ -9,13 +8,33 @@
   margin-bottom: 2rem;
 }
 
-.stats-section > * {
-  border-radius: 12px;
-  padding: 1.25rem 1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.stats-card {
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-/* 💻 Responsive: On medium+ screens, layout stats in a row */
+.stats-card:hover {
+  transform: translateY(-4px);
+}
+
+.stats-card-dark {
+  background-color: #131b2e;
+  border: 1px solid rgba(245, 197, 24, 0.22);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.stats-card-light {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
 @media (min-width: 768px) {
   .stats-section {
     flex-direction: row;
@@ -23,7 +42,7 @@
     align-items: stretch;
   }
 
-  .stats-section > * {
+  .stats-card {
     flex: 1;
   }
 }
