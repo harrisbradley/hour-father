@@ -18,7 +18,7 @@ function PrayerButton({ onPrayed }) {
     cursor: saving ? "not-allowed" : "pointer",
   };
 
-  async function savePrayerDoc(location = null) {
+  async function savePrayerDoc(locationData = null) {
     if (!user?.uid) {
       toast.error("❌ You must be logged in to log a prayer.");
       return;
@@ -32,14 +32,12 @@ function PrayerButton({ onPrayed }) {
       const docData = {
         userId: user.uid,
         prayedAt: serverTimestamp(),
+        location: locationData || null, // ✅ Explicitly include location field (null if unavailable)
       };
-      if (location) {
-        docData.location = location;
-      }
 
       await addDoc(collection(db, "prayers"), docData);
 
-      if (location) {
+      if (locationData) {
         toast.success("🙏 Prayer logged with location!");
       } else {
         toast.info("🙏 Prayer logged!");
@@ -49,7 +47,7 @@ function PrayerButton({ onPrayed }) {
     } catch (error) {
       console.error("Error saving prayer to Firestore:", error);
       if (error?.code === "permission-denied" || error?.message?.includes("permissions")) {
-        toast.error("❌ Firestore permission denied. Please log out and log in again to refresh your session.");
+        toast.error("❌ Firestore permission denied. Please log out and log back in.");
       } else {
         toast.error(`❌ Failed to log prayer: ${error?.message || "Unknown error"}`);
       }
