@@ -26,6 +26,9 @@ function PrayerButton({ onPrayed }) {
 
     setSaving(true);
     try {
+      // 🔄 Ensure auth token is fresh
+      await user.getIdToken(true).catch(() => {});
+
       const docData = {
         userId: user.uid,
         prayedAt: serverTimestamp(),
@@ -45,7 +48,11 @@ function PrayerButton({ onPrayed }) {
       onPrayed?.();
     } catch (error) {
       console.error("Error saving prayer to Firestore:", error);
-      toast.error("❌ Failed to log prayer due to permission error.");
+      if (error?.code === "permission-denied" || error?.message?.includes("permissions")) {
+        toast.error("❌ Firestore permission denied. Please log out and log in again to refresh your session.");
+      } else {
+        toast.error(`❌ Failed to log prayer: ${error?.message || "Unknown error"}`);
+      }
     } finally {
       setSaving(false);
     }
