@@ -6,7 +6,6 @@ import { db } from "../firebase";
 import L from "leaflet";
 import { timeZoneCenters } from "../utils/timezoneMap";
 
-// ✅ Fix default marker icon path (Leaflet quirk)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -16,35 +15,37 @@ L.Icon.Default.mergeOptions({
 
 function PrayerMap({ refreshKey, userTimeZone }) {
   const [locations, setLocations] = useState([]);
-
-  // ✅ Now that userTimeZone is a prop, we can safely use it
   const centerCoords = timeZoneCenters[userTimeZone] || timeZoneCenters["default"];
 
   useEffect(() => {
     async function fetchPrayersWithLocation() {
-      const q = query(
-        collection(db, "prayers"),
-        where("location", "!=", null),
-        orderBy("prayedAt", "desc")
-      );
+      try {
+        const q = query(
+          collection(db, "prayers"),
+          where("location", "!=", null),
+          orderBy("prayedAt", "desc")
+        );
 
-      const snapshot = await getDocs(q);
-      const results = snapshot.docs
-        .map((doc) => {
-          const data = doc.data();
-          if (data.location?.lat && data.location?.lng) {
-            return {
-              id: doc.id,
-              lat: data.location.lat,
-              lng: data.location.lng,
-              time: data.prayedAt?.toDate(),
-            };
-          }
-          return null;
-        })
-        .filter(Boolean);
+        const snapshot = await getDocs(q);
+        const results = snapshot.docs
+          .map((doc) => {
+            const data = doc.data();
+            if (data.location?.lat && data.location?.lng) {
+              return {
+                id: doc.id,
+                lat: data.location.lat,
+                lng: data.location.lng,
+                time: data.prayedAt?.toDate(),
+              };
+            }
+            return null;
+          })
+          .filter(Boolean);
 
-      setLocations(results);
+        setLocations(results);
+      } catch (err) {
+        console.warn("Error fetching prayer locations:", err);
+      }
     }
 
     fetchPrayersWithLocation();
@@ -55,7 +56,7 @@ function PrayerMap({ refreshKey, userTimeZone }) {
       style={{
         height: "400px",
         marginTop: "2rem",
-        borderRadius: "8px",
+        borderRadius: "12px",
         overflow: "hidden",
       }}
     >

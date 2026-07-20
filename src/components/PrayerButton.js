@@ -7,7 +7,7 @@ import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
 
 // import styles
-import { prayerButton, prayerButtonHover } from "../styles";
+import { prayerButton, prayerButtonHover } from "../styles/styles";
 import { toast } from "react-toastify";
 
 function PrayerButton({ onPrayed }) {

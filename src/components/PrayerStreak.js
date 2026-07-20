@@ -25,50 +25,54 @@ function PrayerStreak({ refreshKey }) {
     async function calculateStreak() {
       if (!user) return;
 
-      const q = query(
-        collection(db, "prayers"),
-        where("userId", "==", user.uid),
-        orderBy("prayedAt", "desc")
-      );
-      const snapshot = await getDocs(q);
+      try {
+        const q = query(
+          collection(db, "prayers"),
+          where("userId", "==", user.uid),
+          orderBy("prayedAt", "desc")
+        );
+        const snapshot = await getDocs(q);
 
-      const dateStrings = snapshot.docs
-        .map((doc) => doc.data().prayedAt?.toDate())
-        .filter(Boolean)
-        .map((date) => date.toLocaleDateString());
-      const uniqueDates = [...new Set(dateStrings)];
+        const dateStrings = snapshot.docs
+          .map((doc) => doc.data().prayedAt?.toDate())
+          .filter(Boolean)
+          .map((date) => date.toLocaleDateString());
+        const uniqueDates = [...new Set(dateStrings)];
 
-      let currentStreak = 0;
-      let today = new Date();
-      let checkDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
+        let currentStreak = 0;
+        let today = new Date();
+        let checkDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
 
-      for (let i = 0; i < uniqueDates.length; i++) {
-        const dateStr = checkDate.toLocaleDateString();
-        if (uniqueDates.includes(dateStr)) {
-          currentStreak++;
-          checkDate.setDate(checkDate.getDate() - 1);
-        } else {
-          break;
+        for (let i = 0; i < uniqueDates.length; i++) {
+          const dateStr = checkDate.toLocaleDateString();
+          if (uniqueDates.includes(dateStr)) {
+            currentStreak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+          } else {
+            break;
+          }
         }
-      }
 
-      setStreak(currentStreak);
+        setStreak(currentStreak);
 
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-      const data = snap.exists() ? snap.data() : {};
-      const previousRecord = data.streakRecord || 0;
-      setRecord(previousRecord);
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+        const data = snap.exists() ? snap.data() : {};
+        const previousRecord = data.streakRecord || 0;
+        setRecord(previousRecord);
 
-      if (currentStreak > previousRecord) {
-        await setDoc(ref, { ...data, streakRecord: currentStreak });
-        toast.success(`🎉 New prayer streak record: ${currentStreak} days!`);
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 4000);
+        if (currentStreak > previousRecord) {
+          await setDoc(ref, { ...data, streakRecord: currentStreak }).catch(() => {});
+          toast.success(`🎉 New prayer streak record: ${currentStreak} days!`);
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 4000);
+        }
+      } catch (err) {
+        console.warn("Error calculating streak:", err);
       }
     }
 
