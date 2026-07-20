@@ -1,8 +1,5 @@
 // src/components/MainContent.js
 import PrayerButton from "./PrayerButton";
-import PrayerStats from "./PrayerStats";
-import LastPrayer from "./LastPrayer";
-import PrayerStreak from "./PrayerStreak";
 import PrayerLog from "./PrayerLog";
 import PrayerMap from "./PrayerMap";
 import StatsSection from "./StatsSection";
