@@ -4,41 +4,42 @@ import { useTheme } from "../ThemeContext";
 import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
+import Confetti from "react-confetti";
+import { useState } from "react";
+import { colors, buttons, fonts } from "../styles/ui";
 
 function OurFatherModal({ onClose, onPrayed }) {
   const { user } = useAuth();
-  const { darkMode } = useTheme(); // 🌙 Access dark mode state
+  const { darkMode } = useTheme();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // 🙏 Handle logging a prayer
   async function handlePrayAndClose() {
-    if (!user) return;
+    if (!user || saving) return;
 
+    setSaving(true);
     try {
+      await user.getIdToken(true).catch(() => {});
+
       await addDoc(collection(db, "prayers"), {
         userId: user.uid,
         prayedAt: serverTimestamp(),
-        location: null, // optional
+        location: null,
       });
 
       toast.success("🙏 Prayer logged!");
-      onPrayed(); // 🔄 trigger data refresh
+      setShowConfetti(true);
+
+      setTimeout(() => {
+        onPrayed?.();
+        onClose?.();
+      }, 1800);
     } catch (error) {
       console.error("Error logging prayer:", error);
       toast.error("❌ Failed to log prayer.");
+      setSaving(false);
     }
   }
-
-  // 🎨 Modal styles based on dark/light mode
-  const modalStyles = {
-    backgroundColor: darkMode ? "#1e1e1e" : "white",
-    color: darkMode ? "#f1f1f1" : "#000",
-    padding: "2rem",
-    borderRadius: "10px",
-    maxWidth: "500px",
-    width: "90%",
-    textAlign: "center",
-    boxShadow: "0 0 20px rgba(0,0,0,0.2)",
-  };
 
   return (
     <div
@@ -48,16 +49,56 @@ function OurFatherModal({ onClose, onPrayed }) {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        backgroundColor: "rgba(9, 13, 22, 0.75)",
+        backdropFilter: "blur(8px)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        zIndex: 999,
+        zIndex: 9999,
+        padding: "1rem",
       }}
     >
-      <div style={modalStyles}>
-        <h2>🙏 The Our Father</h2>
-        <p style={{ margin: "1.5rem 0", lineHeight: "1.8" }}>
+      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
+
+      <div
+        style={{
+          backgroundColor: darkMode ? colors.darkCardBg : "#ffffff",
+          color: darkMode ? colors.darkText : colors.lightText,
+          padding: "2.5rem 2rem",
+          borderRadius: "20px",
+          maxWidth: "520px",
+          width: "100%",
+          textAlign: "center",
+          boxShadow: darkMode
+            ? "0 16px 40px rgba(0,0,0,0.6)"
+            : "0 10px 30px rgba(0,0,0,0.15)",
+          border: darkMode
+            ? `1px solid ${colors.subtleGoldBorder}`
+            : "1px solid #e2e8f0",
+          position: "relative",
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: fonts.sacred,
+            fontSize: "1.8rem",
+            margin: "0 0 1rem 0",
+            color: darkMode ? colors.accent : colors.primary,
+          }}
+        >
+          🙏 The Our Father
+        </h2>
+
+        <div
+          style={{
+            margin: "1.5rem 0",
+            lineHeight: "2",
+            fontFamily: fonts.sacred,
+            fontSize: "1.1rem",
+            color: darkMode ? "#f8fafc" : "#1e293b",
+            fontStyle: "italic",
+          }}
+        >
           Our Father, who art in heaven, <br />
           hallowed be thy name. <br />
           Thy kingdom come, <br />
@@ -68,32 +109,31 @@ function OurFatherModal({ onClose, onPrayed }) {
           as we forgive those who trespass against us. <br />
           And lead us not into temptation, <br />
           but deliver us from evil. Amen.
-        </p>
+        </div>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "2rem" }}>
           <button
             onClick={handlePrayAndClose}
+            disabled={saving}
             style={{
-              backgroundColor: "#0d6efd",
-              color: "white",
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
+              ...buttons.base,
+              ...buttons.accent,
+              padding: "0.75rem 1.8rem",
+              fontSize: "1rem",
+              opacity: saving ? 0.7 : 1,
             }}
           >
-            🙏 I Just Prayed
+            {saving ? "⏳ Logging..." : "🙏 Complete Prayer"}
           </button>
 
           <button
             onClick={onClose}
             style={{
-              backgroundColor: "#6c757d",
-              color: "white",
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
+              ...buttons.base,
+              ...buttons.secondary,
+              padding: "0.75rem 1.4rem",
+              fontSize: "0.95rem",
+              opacity: 0.8,
             }}
           >
             ❌ Close

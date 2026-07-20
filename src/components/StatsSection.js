@@ -1,29 +1,27 @@
-// 📁 StatsSection.js – Combines all prayer stat components into one section
-
-// 📦 Import styles for layout
+// src/components/StatsSection.js
 import "../styles/StatsSection.css";
-
-// 📊 Import individual stat components
 import PrayerStats from "./PrayerStats";
 import LastPrayer from "./LastPrayer";
 import PrayerStreak from "./PrayerStreak";
 
-// 🚀 Functional component to group all stat displays
-function StatsSection({ refreshKey }) {
+function StatsSection({ refreshKey, darkMode }) {
+  const cardClass = `stats-card ${darkMode ? "stats-card-dark" : "stats-card-light"}`;
+
   return (
-    // 📐 Responsive container (styled via CSS)
     <section className="stats-section">
-      {/* 🔢 Total prayer count display */}
-      <PrayerStats refreshKey={refreshKey} />
+      <div className={cardClass}>
+        <PrayerStats refreshKey={refreshKey} darkMode={darkMode} />
+      </div>
 
-      {/* ⏰ Last prayer time display */}
-      <LastPrayer refreshKey={refreshKey} />
+      <div className={cardClass}>
+        <LastPrayer refreshKey={refreshKey} darkMode={darkMode} />
+      </div>
 
-      {/* 🔥 Current prayer streak display */}
-      <PrayerStreak refreshKey={refreshKey} />
+      <div className={cardClass}>
+        <PrayerStreak refreshKey={refreshKey} darkMode={darkMode} />
+      </div>
     </section>
   );
 }
 
-// 📤 Export component for use in MainContent or other parents
 export default StatsSection;

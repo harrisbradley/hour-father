@@ -5,28 +5,47 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- App Metadata -->
+    <!-- App Metadata & SEO -->
     <meta
       name="description"
-      content="Hour Father - A personal prayer tracker"
+      content="Hour Father - Daily Prayer Habit Tracker and Spiritual Journey Map"
     />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="author" content="Your Name" />
+    <meta name="theme-color" content="#090d16" />
+    <meta name="author" content="Harris Bradley" />
 
-    <title>Hour Father</title>
+    <title>🙏 Hour Father — Daily Prayer Habit Tracker</title>
 
-    <!-- Optional: Add a custom font or icons here -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=YourFont&display=swap" rel="stylesheet"> -->
+    <!-- Google Fonts: Cinzel, Outfit, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Leaflet CSS for Prayer Map -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
         padding: 0;
-        background-color: #121212;
-        transition: background 0.3s;
+        font-family: 'Inter', sans-serif;
+        background-color: #090d16;
+        color: #f8fafc;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
-
       body.light {
-        background-color: #ffffff;
+        background-color: #f8fafc;
+        color: #0f172a;
       }
     </style>
   </head>

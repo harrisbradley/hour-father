@@ -1,33 +1,36 @@
-import { colors } from "./ui";
+// src/styles/styles.js
+import { colors, fonts } from "./ui";
 
 export function getContainerStyles(darkMode) {
   return {
-    maxWidth: "840px",
+    maxWidth: "860px",
     margin: "0 auto",
     padding: "0 1rem 3rem 1rem",
     textAlign: "center",
-    fontFamily: "'Segoe UI', Roboto, sans-serif",
+    fontFamily: fonts.body,
     backgroundColor: darkMode ? colors.darkBg : colors.lightBg,
     color: darkMode ? colors.darkText : colors.lightText,
     minHeight: "100vh",
-    transition: "background 0.3s, color 0.3s",
+    transition: "background-color 0.3s ease, color 0.3s ease",
   };
 }
 
 export const container = {
-  maxWidth: "840px",
+  maxWidth: "860px",
   margin: "0 auto",
   padding: "1rem",
   textAlign: "center",
-  fontFamily: "'Segoe UI', Roboto, sans-serif",
+  fontFamily: fonts.body,
 };
 
 export const heading = {
+  fontFamily: fonts.sacred,
   fontSize: "1.8rem",
   marginBottom: "1rem",
 };
 
 export const button = {
+  fontFamily: fonts.body,
   padding: "0.75rem 1.25rem",
   fontSize: "1rem",
   borderRadius: "8px",
@@ -48,67 +51,21 @@ export const card = {
 };
 
 export const prayerButton = {
-  backgroundColor: colors.primary,
+  fontFamily: fonts.sacred,
+  background: colors.marianGradient,
   color: "#ffffff",
-  fontSize: "1.3rem",
+  fontSize: "1.25rem",
   padding: "1.2rem 2.8rem",
   border: `2px solid ${colors.accent}`,
   borderRadius: "16px",
   cursor: "pointer",
-  marginTop: "1.5rem",
   fontWeight: "bold",
-  letterSpacing: "0.5px",
-  boxShadow: "0 6px 20px rgba(0, 68, 167, 0.35)",
-  transition: "all 0.2s ease-in-out",
+  letterSpacing: "0.03em",
+  boxShadow: `0 8px 24px ${colors.goldGlow}`,
+  transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
 };
 
 export const prayerButtonHover = {
-  backgroundColor: colors.primaryHover,
-  boxShadow: "0 8px 24px rgba(245, 197, 24, 0.4)",
+  boxShadow: "0 12px 30px rgba(245, 197, 24, 0.5)",
   transform: "scale(1.03)",
 };
-  
-
-  export const toggleContainer = {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.5rem",
-    marginRight: "1rem",
-  };
-  
-  export const toggleSwitch = {
-    position: "relative",
-    width: "50px",
-    height: "24px",
-  };
-  
-  export const toggleCheckbox = {
-    opacity: 0,
-    width: 0,
-    height: 0,
-  };
-  
-  export const toggleSlider = {
-    position: "absolute",
-    cursor: "pointer",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#ccc",
-    borderRadius: "24px",
-    transition: "0.4s",
-  };
-  
-  export const toggleSliderBefore = {
-    content: '""',
-    position: "absolute",
-    height: "18px",
-    width: "18px",
-    left: "3px",
-    bottom: "3px",
-    backgroundColor: "white",
-    borderRadius: "50%",
-    transition: "0.4s",
-  };
-  

@@ -1,6 +1,6 @@
 // src/components/Header.js
 import { useTheme } from "../ThemeContext";
-import { colors, buttons } from "../styles/ui";
+import { colors, buttons, fonts } from "../styles/ui";
 
 function Header({ onToggleProfile, userName }) {
   const { darkMode, toggleTheme } = useTheme();
@@ -11,35 +11,40 @@ function Header({ onToggleProfile, userName }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "1rem 1.5rem",
+        padding: "1.2rem 1.8rem",
         backgroundColor: darkMode ? colors.darkCardBg : "#ffffff",
         color: darkMode ? colors.darkText : colors.lightText,
         borderBottom: darkMode
           ? `1px solid ${colors.subtleGoldBorder}`
           : "1px solid #e2e8f0",
-        borderRadius: "0 0 12px 12px",
+        borderRadius: "0 0 16px 16px",
         boxShadow: darkMode
-          ? "0 4px 12px rgba(0, 0, 0, 0.2)"
-          : "0 2px 8px rgba(0, 0, 0, 0.05)",
+          ? "0 8px 24px rgba(0, 0, 0, 0.4)"
+          : "0 2px 12px rgba(0, 0, 0, 0.05)",
         marginBottom: "1.5rem",
       }}
     >
-      <h1
-        style={{
-          margin: 0,
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          letterSpacing: "-0.02em",
-          color: darkMode ? colors.accent : colors.primary,
-          display: "flex",
-          alignItems: "center",
-          gap: "0.4rem",
-        }}
-      >
-        <span>🙏</span> Hour Father
-      </h1>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+        <span style={{ fontSize: "1.6rem", filter: "drop-shadow(0 2px 4px rgba(245,197,24,0.4))" }}>
+          🙏
+        </span>
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: fonts.sacred,
+            fontSize: "1.6rem",
+            fontWeight: 700,
+            letterSpacing: "0.02em",
+            background: darkMode ? colors.goldGradient : colors.marianGradient,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Hour Father
+        </h1>
+      </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "1.2rem" }}>
         {/* 🌙 Custom toggle switch */}
         <label
           style={{
@@ -54,7 +59,7 @@ function Header({ onToggleProfile, userName }) {
           <div
             onClick={toggleTheme}
             style={{
-              width: "48px",
+              width: "50px",
               height: "26px",
               backgroundColor: darkMode ? colors.primary : "#cbd5e1",
               borderRadius: "13px",
@@ -71,9 +76,9 @@ function Header({ onToggleProfile, userName }) {
                 borderRadius: "50%",
                 position: "absolute",
                 top: "3px",
-                left: darkMode ? "25px" : "3px",
-                transition: "left 0.3s ease",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                left: darkMode ? "27px" : "3px",
+                transition: "left 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
               }}
             />
           </div>
@@ -85,7 +90,7 @@ function Header({ onToggleProfile, userName }) {
           style={{
             ...buttons.base,
             ...(darkMode ? buttons.accent : buttons.primary),
-            padding: "0.45rem 1rem",
+            padding: "0.45rem 1.1rem",
             fontSize: "0.88rem",
           }}
         >

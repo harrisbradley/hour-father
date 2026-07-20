@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
+import { colors, fonts } from "../styles/ui";
 
-function PrayerStats({ refreshKey }) {
+function PrayerStats({ refreshKey, darkMode }) {
   const { user } = useAuth();
   const [prayerCount, setPrayerCount] = useState(0);
 
@@ -29,9 +30,31 @@ function PrayerStats({ refreshKey }) {
   }, [user, refreshKey]);
 
   return (
-    <p style={{ marginTop: "1rem", fontSize: "1.1rem" }}>
-      You’ve prayed <strong>{prayerCount}</strong> time{prayerCount === 1 ? "" : "s"}.
-    </p>
+    <div>
+      <div style={{ fontSize: "1.8rem", marginBottom: "0.4rem" }}>📿</div>
+      <div
+        style={{
+          fontSize: "0.8rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: darkMode ? "#94a3b8" : "#64748b",
+          fontWeight: 600,
+          marginBottom: "0.4rem",
+        }}
+      >
+        Total Prayers
+      </div>
+      <div
+        style={{
+          fontSize: "2.2rem",
+          fontFamily: fonts.numeric,
+          fontWeight: 700,
+          color: darkMode ? colors.accent : colors.primary,
+        }}
+      >
+        {prayerCount}
+      </div>
+    </div>
   );
 }
 

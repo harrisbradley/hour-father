@@ -1,76 +1,84 @@
 // src/components/MainContent.js
-import PrayerButton from "./PrayerButton";
+import HeroTimerCard from "./HeroTimerCard";
+import StatsSection from "./StatsSection";
+import WeeklyChart from "./WeeklyChart";
 import PrayerLog from "./PrayerLog";
 import PrayerMap from "./PrayerMap";
-import StatsSection from "./StatsSection";
-import { colors, buttons } from "../styles/ui";
+import { colors, fonts } from "../styles/ui";
 
 function MainContent({
   user,
   userProfile,
   refreshKey,
-  setRefreshKey,
   onShowProfile,
   onShowPrayerModal,
   onLogout,
   darkMode,
 }) {
   return (
-    <div style={{ padding: "0.5rem 1rem" }}>
-      <p
+    <div style={{ padding: "0.5rem 0.5rem 2rem 0.5rem" }}>
+      {/* Welcome Bar */}
+      <div
         style={{
-          fontSize: "1.1rem",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: "1.5rem",
-          color: darkMode ? colors.darkText : colors.lightText,
+          padding: "0 0.5rem",
         }}
       >
-        Welcome back,{" "}
-        <strong style={{ color: darkMode ? colors.accent : colors.primary }}>
-          {userProfile?.name || user.email}
-        </strong>
-      </p>
-
-      {/* 🙏 Primary Action Button */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <PrayerButton onPrayed={() => setRefreshKey((k) => k + 1)} />
-      </div>
-
-      {/* 📖 Open modal with full prayer */}
-      <div>
-        <button
-          onClick={onShowPrayerModal}
+        <p
           style={{
-            ...buttons.base,
-            ...(darkMode ? buttons.outline : buttons.primary),
-            fontSize: "0.95rem",
-            padding: "0.6rem 1.4rem",
+            fontSize: "1.1rem",
+            margin: 0,
+            fontFamily: fonts.body,
+            color: darkMode ? colors.darkText : colors.lightText,
           }}
         >
-          📖 Show Our Father Prayer
-        </button>
+          Welcome back,{" "}
+          <strong style={{ color: darkMode ? colors.accent : colors.primary }}>
+            {userProfile?.name || user.email?.split("@")[0] || "Friend"}
+          </strong>
+        </p>
       </div>
 
-      <StatsSection refreshKey={refreshKey} />
+      {/* 1. Hero Timer & Action Card */}
+      <HeroTimerCard
+        refreshKey={refreshKey}
+        darkMode={darkMode}
+        onShowPrayerModal={onShowPrayerModal}
+      />
+
+      {/* 2. Responsive 3-Column Stats Grid */}
+      <StatsSection refreshKey={refreshKey} darkMode={darkMode} />
+
+      {/* 3. Weekly Prayer Activity Bar Chart */}
+      <WeeklyChart refreshKey={refreshKey} darkMode={darkMode} />
+
+      {/* 4. Recent Prayer Log */}
       <PrayerLog refreshKey={refreshKey} darkMode={darkMode} />
 
-      {/* 🗺️ Map only if user profile has a time zone */}
-      {userProfile?.timeZone && (
-        <PrayerMap
-          refreshKey={refreshKey}
-          userTimeZone={userProfile.timeZone}
-        />
-      )}
+      {/* 5. Interactive Spiritual Prayer Map */}
+      <PrayerMap
+        refreshKey={refreshKey}
+        userTimeZone={userProfile?.timeZone || "default"}
+        darkMode={darkMode}
+      />
 
-      {/* 🔓 Log out */}
-      <div style={{ marginTop: "2.5rem", paddingBottom: "1.5rem" }}>
+      {/* 6. Logout Footer */}
+      <div style={{ marginTop: "3rem", paddingBottom: "1.5rem", textAlign: "center" }}>
         <button
           onClick={onLogout}
           style={{
-            ...buttons.base,
-            ...buttons.secondary,
+            background: "none",
+            border: darkMode ? "1px solid #334155" : "1px solid #cbd5e1",
+            color: darkMode ? "#94a3b8" : "#64748b",
+            padding: "0.5rem 1.4rem",
+            borderRadius: "8px",
             fontSize: "0.85rem",
-            padding: "0.5rem 1.2rem",
-            opacity: 0.85,
+            cursor: "pointer",
+            fontFamily: fonts.body,
+            transition: "all 0.2s ease",
           }}
         >
           🚪 Log Out
