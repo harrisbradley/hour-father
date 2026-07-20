@@ -2,21 +2,28 @@
 
 /* 📱 Default: Mobile-first layout – stack vertically */
 .stats-section {
-  display: flex;               /* 🔧 Enables flexbox layout */
-  flex-direction: column;     /* ⬇️ Stack children vertically */
-  gap: 1.5rem;                 /* 📏 Spacing between stat components */
-  margin-top: 1.5rem;          /* 📦 Top margin to separate from other content */
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stats-section > * {
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* 💻 Responsive: On medium+ screens, layout stats in a row */
 @media (min-width: 768px) {
   .stats-section {
-    flex-direction: row;          /* ➡️ Lay children out horizontally */
-    justify-content: space-between; /* 📐 Distribute them evenly */
-    align-items: stretch;         /* 📏 Make all stat blocks equal height */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
   }
 
   .stats-section > * {
-    flex: 1;                      /* ⚖️ Allow each child to grow equally */
+    flex: 1;
   }
 }
