@@ -12,13 +12,17 @@ function PrayerStats({ refreshKey }) {
     async function fetchPrayerCount() {
       if (!user) return;
 
-      const q = query(
-        collection(db, "prayers"),
-        where("userId", "==", user.uid)
-      );
+      try {
+        const q = query(
+          collection(db, "prayers"),
+          where("userId", "==", user.uid)
+        );
 
-      const snapshot = await getDocs(q);
-      setPrayerCount(snapshot.size); // 🔢 Number of docs = count
+        const snapshot = await getDocs(q);
+        setPrayerCount(snapshot.size);
+      } catch (err) {
+        console.warn("Error fetching prayer stats:", err);
+      }
     }
 
     fetchPrayerCount();

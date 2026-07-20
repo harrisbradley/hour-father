@@ -12,30 +12,31 @@ function LastPrayer({ refreshKey }) {
     async function fetchLastPrayer() {
       if (!user) return;
 
-      const q = query(
-        collection(db, "prayers"),
-        where("userId", "==", user.uid),
-        orderBy("prayedAt", "desc"), // ⬇️ Most recent first
-        limit(1)
-      );
+      try {
+        const q = query(
+          collection(db, "prayers"),
+          where("userId", "==", user.uid),
+          orderBy("prayedAt", "desc"),
+          limit(1)
+        );
 
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        const data = doc.data();
-
-        // Convert Firestore timestamp to JS Date
-        const date = data.prayedAt?.toDate();
-        setLastTime(date);
-      } else {
-        setLastTime(null);
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const doc = snapshot.docs[0];
+          const data = doc.data();
+          const date = data.prayedAt?.toDate();
+          setLastTime(date);
+        } else {
+          setLastTime(null);
+        }
+      } catch (err) {
+        console.warn("Error fetching last prayer:", err);
       }
     }
 
     fetchLastPrayer();
   }, [user, refreshKey]);
 
-  // 🧠 Format date and time
   function formatDateTime(date) {
     return date.toLocaleString(undefined, {
       dateStyle: "medium",

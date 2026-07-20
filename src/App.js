@@ -32,7 +32,7 @@ function App() {
   const auth = getAuth(app);
   const { darkMode } = useTheme();
 
-  const { userProfile } = useUserProfile(user);
+  const { userProfile, loadingProfile } = useUserProfile(user);
   const [showLogin, setShowLogin] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [showProfile, setShowProfile] = useState(false);
@@ -44,8 +44,14 @@ function App() {
   }
 
   // 🕒 Fallback while loading profile
-  if (user && !userProfile) {
-    return <div style={{ padding: "2rem" }}>Loading profile...</div>;
+  if (user && loadingProfile && !userProfile) {
+    return (
+      <div style={getContainerStyles(darkMode)}>
+        <div style={{ padding: "3rem 1rem", fontSize: "1.1rem" }}>
+          Loading profile...
+        </div>
+      </div>
+    );
   }
 
   return (
