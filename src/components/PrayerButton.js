@@ -1,72 +1,92 @@
-// import react
-import { useState } from "react";
-
 // src/components/PrayerButton.js
+import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../AuthContext";
-
-// import styles
 import { prayerButton, prayerButtonHover } from "../styles/styles";
 import { toast } from "react-toastify";
 
 function PrayerButton({ onPrayed }) {
   const { user } = useAuth();
-  const [hovering, setHovering] = useState(false); // ✅ track hover state
+  const [hovering, setHovering] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // 👇 combine base and hover styles
   const combinedStyle = {
     ...prayerButton,
     ...(hovering ? prayerButtonHover : {}),
+    opacity: saving ? 0.7 : 1,
+    cursor: saving ? "not-allowed" : "pointer",
   };
 
-  async function handlePrayer() {
-    if (!user) return;
-  
-    // 🧭 Step 1: Try to get current location
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-  
-        try {
-          await addDoc(collection(db, "prayers"), {
-            userId: user.uid,
-            prayedAt: serverTimestamp(),
-            location: {
-              lat: latitude,
-              lng: longitude,
-            },
-          });
-  
-          toast.success("🙏 Prayer logged with location!");
-          onPrayed?.();
-        } catch (error) {
-          console.error("Error saving prayer:", error);
-          toast.error("❌ Prayer failed to save.");
-        }
-      },
-      (error) => {
-        console.warn("Location permission denied or unavailable", error);
-  
-        // 📍 Fallback if location fails — still log the prayer
-        addDoc(collection(db, "prayers"), {
-          userId: user.uid,
-          prayedAt: serverTimestamp(),
-        });
-  
-        toast.warn("🙏 Prayer logged, but no location available.");
+  async function savePrayerDoc(location = null) {
+    if (!user?.uid) {
+      toast.error("❌ You must be logged in to log a prayer.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const docData = {
+        userId: user.uid,
+        prayedAt: serverTimestamp(),
+      };
+      if (location) {
+        docData.location = location;
       }
-    );
+
+      await addDoc(collection(db, "prayers"), docData);
+
+      if (location) {
+        toast.success("🙏 Prayer logged with location!");
+      } else {
+        toast.info("🙏 Prayer logged!");
+      }
+
+      onPrayed?.();
+    } catch (error) {
+      console.error("Error saving prayer to Firestore:", error);
+      toast.error("❌ Failed to log prayer due to permission error.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handlePrayer() {
+    if (!user || saving) return;
+
+    // Check if Geolocation is supported and running in a secure context (HTTPS or localhost)
+    const isSecureContext =
+      window.isSecureContext ||
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+
+    if (navigator.geolocation && isSecureContext) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          savePrayerDoc({ lat: latitude, lng: longitude });
+        },
+        (error) => {
+          console.warn("Location unavailable or denied:", error?.message || error);
+          savePrayerDoc(null);
+        },
+        { timeout: 5000 }
+      );
+    } else {
+      // Insecure HTTP origin (e.g. harrispi.local over HTTP) — log prayer directly without location
+      savePrayerDoc(null);
+    }
   }
 
   return (
     <button
       onClick={handlePrayer}
+      disabled={saving}
       style={combinedStyle}
-      onMouseEnter={() => setHovering(true)} // ✅ activate hover
-      onMouseLeave={() => setHovering(false)} // ✅ deactivate hover
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
-      🙏 I Just Prayed
+      {saving ? "⏳ Logging Prayer..." : "🙏 I Just Prayed"}
     </button>
   );
 }
