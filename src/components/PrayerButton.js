@@ -78,7 +78,7 @@ function PrayerButton({ onPrayed }) {
         { timeout: 5000 }
       );
     } else {
-      // Insecure HTTP origin (e.g. harrispi.local over HTTP) — log prayer directly without location
+      // Insecure HTTP origin (e.g. local LAN server over HTTP) — log prayer directly without location
       savePrayerDoc(null);
     }
   }
